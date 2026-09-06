@@ -3,55 +3,52 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=utf-8");
 
-// Povolené rádiá
-$streams = [
+$radios = [
     "expres" => "https://stream.bauermedia.sk/expres-hi.mp3",
     "melody" => "https://stream.bauermedia.sk/melody-hi.mp3"
 ];
 
-$radio = $_GET["radio"] ?? "expres";
+$radio = $_GET["radio"] ?? "";
 
-if (!isset($streams[$radio])) {
+if (!isset($radios[$radio])) {
     http_response_code(400);
     echo json_encode([
         "error" => "Neznáme rádio"
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$url = $streams[$radio];
+$url = $radios[$radio];
 
 $ch = curl_init($url);
 
 curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_TIMEOUT => 15,
-    CURLOPT_CONNECTTIMEOUT => 10,
-
-    // Požiadame stream o ICY metadata
+    CURLOPT_HEADER => true,
+    CURLOPT_TIMEOUT => 10,
+    CURLOPT_USERAGENT => "Počúvam Rádiá",
     CURLOPT_HTTPHEADER => [
-        "Icy-MetaData: 1",
-        "User-Agent: PocuvamRadia/1.0"
+        "Icy-MetaData: 1"
     ]
 ]);
 
-$data = curl_exec($ch);
+$response = curl_exec($ch);
 
-if ($data === false) {
+if ($response === false) {
     echo json_encode([
-        "error" => "Stream sa nepodarilo načítať"
-    ]);
+        "error" => "Nepodarilo sa pripojiť k rádiu"
+    ], JSON_UNESCAPED_UNICODE);
+    curl_close($ch);
     exit;
 }
 
 $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-$headers = substr($data, 0, $headerSize);
-$body = substr($data, $headerSize);
+$headers = substr($response, 0, $headerSize);
+$body = substr($response, $headerSize);
 
 curl_close($ch);
 
-// Nájdeme interval metadát
 $metaInt = null;
 
 if (preg_match('/icy-metaint:\s*(\d+)/i', $headers, $match)) {
@@ -60,22 +57,29 @@ if (preg_match('/icy-metaint:\s*(\d+)/i', $headers, $match)) {
 
 if (!$metaInt) {
     echo json_encode([
-        "error" => "Tento stream neposkytuje ICY metadata"
-    ]);
+        "error" => "Rádio neposkytuje ICY metadata"
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// Potrebujeme dostať prvý blok metadata
-if (strlen($body) <= $metaInt) {
+if (strlen($body) < $metaInt + 1) {
     echo json_encode([
-        "error" => "Stream neposkytol dostatok dát"
-    ]);
+        "error" => "Metadata sa nepodarilo načítať"
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 $metadataLengthByte = ord($body[$metaInt]);
-
 $metadataLength = $metadataLengthByte * 16;
+
+if ($metadataLength <= 0) {
+    echo json_encode([
+        "title" => "",
+        "artist" => "",
+        "raw" => ""
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 $metadata = substr(
     $body,
@@ -83,43 +87,23 @@ $metadata = substr(
     $metadataLength
 );
 
-// Hľadáme StreamTitle
+$metadata = trim($metadata, "\0");
+
 $title = "";
 
-if (preg_match(
-    "/StreamTitle='(.*?)';/i",
-    $metadata,
-    $match
-)) {
+if (preg_match("/StreamTitle='([^']*)'/i", $metadata, $match)) {
     $title = trim($match[1]);
 }
-
-if ($title === "") {
-    echo json_encode([
-        "title" => "",
-        "artist" => "",
-        "raw" => "",
-        "error" => "Stream momentálne neposkytol názov skladby"
-    ]);
-    exit;
-}
-
-// Väčšina rádií používa formát:
-// Interpret - Názov skladby
 
 $artist = "";
 $song = $title;
 
-$parts = explode(" - ", $title, 2);
-
-if (count($parts) === 2) {
-    $artist = trim($parts[0]);
-    $song = trim($parts[1]);
+if (strpos($title, " - ") !== false) {
+    [$artist, $song] = explode(" - ", $title, 2);
 }
 
 echo json_encode([
-    "title" => $song,
-    "artist" => $artist,
+    "title" => trim($song),
+    "artist" => trim($artist),
     "raw" => $title
 ], JSON_UNESCAPED_UNICODE);
-?>
