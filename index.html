@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Internetová rádio aplikácia">
+
+  <meta name="description" content="Počúvam Rádiá – internetový rádio prehrávač">
   <meta name="theme-color" content="#111111">
 
-  <title>Rádio</title>
+  <title>Počúvam Rádiá</title>
 
   <style>
     * {
       box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -18,12 +23,11 @@
       min-height: 100vh;
       font-family: Arial, sans-serif;
       background: #111;
-      color: white;
+      color: #fff;
     }
 
     button,
     input,
-    select,
     textarea {
       font: inherit;
     }
@@ -36,20 +40,24 @@
       width: 100%;
       max-width: 900px;
       margin: auto;
-      padding: 20px;
+      padding: 16px;
     }
+
+    /* =========================
+       HLAVIČKA
+       ========================= */
 
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
-    header h1 {
+    .app-title {
       margin: 0;
-      font-size: 28px;
+      font-size: 27px;
     }
 
     .menu-button {
@@ -61,12 +69,26 @@
       font-size: 18px;
     }
 
+    /* =========================
+       PREHRÁVAČ
+       ========================= */
+
     .player {
       background: #1d1d1d;
-      border-radius: 22px;
-      padding: 25px;
+      border-radius: 24px;
+      padding: 24px;
       margin-bottom: 20px;
-      box-shadow: 0 12px 35px rgba(0,0,0,.35);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, .35);
+    }
+
+    .radio-logo {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 16px;
+      border-radius: 18px;
+      background: #fff;
     }
 
     .radio-name {
@@ -86,14 +108,14 @@
     .song-info {
       text-align: center;
       background: #292929;
-      border-radius: 16px;
+      border-radius: 17px;
       padding: 20px;
     }
 
     .song-title {
       font-size: 23px;
       font-weight: bold;
-      margin-bottom: 8px;
+      margin-bottom: 9px;
     }
 
     .artist {
@@ -103,7 +125,8 @@
     }
 
     .radio-web a {
-      color: white;
+      color: #fff;
+      text-decoration: underline;
     }
 
     .controls {
@@ -111,27 +134,27 @@
       justify-content: center;
       align-items: center;
       gap: 15px;
-      margin: 22px 0;
+      margin: 23px 0;
     }
 
     .play-button {
-      width: 68px;
-      height: 68px;
+      width: 70px;
+      height: 70px;
       border: 0;
       border-radius: 50%;
       background: white;
       color: #111;
-      font-size: 26px;
+      font-size: 27px;
     }
 
     .favorite-button {
-      width: 50px;
-      height: 50px;
+      width: 52px;
+      height: 52px;
       border: 0;
       border-radius: 50%;
       background: #333;
       color: white;
-      font-size: 23px;
+      font-size: 24px;
     }
 
     .favorite-button.active {
@@ -147,12 +170,16 @@
       justify-content: space-between;
       color: #aaa;
       font-size: 14px;
-      margin-bottom: 7px;
+      margin-bottom: 8px;
     }
 
     .volume input {
       width: 100%;
     }
+
+    /* =========================
+       SEKcie
+       ========================= */
 
     .section {
       background: #1d1d1d;
@@ -165,6 +192,14 @@
       margin-top: 0;
     }
 
+    .hidden {
+      display: none !important;
+    }
+
+    /* =========================
+       RÁDIÁ
+       ========================= */
+
     .radio-list {
       display: grid;
       gap: 10px;
@@ -172,11 +207,14 @@
 
     .radio-item {
       width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
       border: 0;
       background: #292929;
       color: white;
-      border-radius: 12px;
-      padding: 15px;
+      border-radius: 13px;
+      padding: 13px;
       text-align: left;
       font-size: 16px;
     }
@@ -185,15 +223,67 @@
       background: #353535;
     }
 
+    .radio-item-logo {
+      width: 45px;
+      height: 45px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: white;
+    }
+
+    .radio-item-name {
+      font-weight: bold;
+    }
+
     .recommended {
       display: grid;
       gap: 10px;
     }
 
-    .program-controls {
-      display: flex;
+    /* =========================
+       MOJE RÁDIÁ
+       ========================= */
+
+    .form {
+      display: grid;
       gap: 10px;
-      flex-wrap: wrap;
+    }
+
+    .form input,
+    .form textarea {
+      width: 100%;
+      background: #292929;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 10px;
+      padding: 12px;
+      outline: none;
+    }
+
+    .form textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .form button {
+      border: 0;
+      border-radius: 10px;
+      padding: 13px;
+      background: white;
+      color: #111;
+      font-weight: bold;
+    }
+
+    .empty {
+      color: #888;
+      font-size: 14px;
+    }
+
+    /* =========================
+       PROGRAM
+       ========================= */
+
+    .program-controls {
       margin-bottom: 15px;
     }
 
@@ -202,7 +292,7 @@
       color: white;
       border: 1px solid #444;
       border-radius: 10px;
-      padding: 10px;
+      padding: 11px;
     }
 
     .program-list {
@@ -219,43 +309,13 @@
     }
 
     .program-time {
-      font-weight: bold;
       min-width: 60px;
-    }
-
-    .form {
-      display: grid;
-      gap: 10px;
-    }
-
-    .form input,
-    .form textarea {
-      width: 100%;
-      background: #292929;
-      color: white;
-      border: 1px solid #444;
-      border-radius: 10px;
-      padding: 12px;
-    }
-
-    .form textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    .form button {
-      border: 0;
-      border-radius: 10px;
-      padding: 12px;
-      background: white;
-      color: #111;
       font-weight: bold;
     }
 
-    .empty {
-      color: #888;
-      padding: 10px 0;
-    }
+    /* =========================
+       FOOTER
+       ========================= */
 
     footer {
       text-align: center;
@@ -264,17 +324,19 @@
       padding: 10px 0 25px;
     }
 
-    .hidden {
-      display: none;
-    }
-
     @media (max-width: 600px) {
+
       .app {
         padding: 12px;
       }
 
       .player {
         padding: 18px;
+      }
+
+      .radio-logo {
+        width: 125px;
+        height: 125px;
       }
 
       .radio-name {
@@ -297,15 +359,21 @@
 
 <div class="app">
 
+  <!-- HLAVIČKA -->
+
   <header>
-    <h1>📻 Rádio</h1>
+
+    <h1 class="app-title">
+      📻 Počúvam Rádiá
+    </h1>
 
     <button
       id="menuButton"
       class="menu-button"
       type="button">
-      ☰ Rádiá
+      ☰
     </button>
+
   </header>
 
 
@@ -313,26 +381,45 @@
 
   <section class="player">
 
-    <div id="radioName" class="radio-name">
+    <img
+      id="radioLogo"
+      class="radio-logo"
+      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRObKScNrVH6CHuGgHAglR-ZjGL0Crgp6whWV5GNDMzqQ&s=10"
+      alt="Rádio Expres">
+
+    <div
+      id="radioName"
+      class="radio-name">
       Rádio Expres
     </div>
 
-    <div id="status" class="status">
+    <div
+      id="status"
+      class="status">
       Pripravené na prehrávanie
     </div>
 
+
+    <!-- METADÁTA -->
+
     <div class="song-info">
 
-      <div id="songTitle" class="song-title">
+      <div
+        id="songTitle"
+        class="song-title">
         Názov skladby
       </div>
 
-      <div id="artist" class="artist">
+      <div
+        id="artist"
+        class="artist">
         Interpret
       </div>
 
       <div class="radio-web">
+
         🌐
+
         <a
           id="radioWeb"
           href="https://www.bauermedia.sk"
@@ -340,10 +427,13 @@
           rel="noopener noreferrer">
           www.bauermedia.sk
         </a>
+
       </div>
 
     </div>
 
+
+    <!-- OVLÁDANIE -->
 
     <div class="controls">
 
@@ -351,7 +441,7 @@
         id="playButton"
         class="play-button"
         type="button"
-        aria-label="Prehrať">
+        aria-label="Prehrať rádio">
         ▶️
       </button>
 
@@ -359,18 +449,27 @@
         id="favoriteButton"
         class="favorite-button"
         type="button"
-        aria-label="Obľúbené">
+        aria-label="Pridať do obľúbených">
         ♡
       </button>
 
     </div>
 
 
+    <!-- HLASITOSŤ -->
+
     <div class="volume">
 
       <div class="volume-top">
-        <span>🔊 Hlasitosť</span>
-        <span id="volumeValue">100%</span>
+
+        <span>
+          🔊 Hlasitosť
+        </span>
+
+        <span id="volumeValue">
+          100%
+        </span>
+
       </div>
 
       <input
@@ -384,10 +483,18 @@
     </div>
 
 
-    <audio id="radio" preload="none">
+    <!-- AUDIO -->
+
+    <audio
+      id="radio"
+      preload="none">
+
       <source
         src="https://stream.bauermedia.sk/expres-hi.mp3"
         type="audio/mpeg">
+
+      Váš prehliadač nepodporuje prehrávanie audia.
+
     </audio>
 
   </section>
@@ -397,7 +504,9 @@
 
   <section class="section">
 
-    <h2>⭐ Odporúčané</h2>
+    <h2>
+      ⭐ Odporúčané
+    </h2>
 
     <div
       id="recommended"
@@ -413,7 +522,9 @@
     id="radioSection"
     class="section hidden">
 
-    <h2>📻 Rádiá</h2>
+    <h2>
+      📻 Rádiá
+    </h2>
 
     <div
       id="radioList"
@@ -423,11 +534,39 @@
   </section>
 
 
+  <!-- OBĽÚBENÉ -->
+
+  <section class="section">
+
+    <h2>
+      ❤️ Obľúbené
+    </h2>
+
+    <div
+      id="favoriteList"
+      class="radio-list">
+    </div>
+
+    <p
+      id="noFavorites"
+      class="empty">
+      Zatiaľ nemáš žiadne obľúbené rádio.
+    </p>
+
+  </section>
+
+
   <!-- MOJE RÁDIÁ -->
 
   <section class="section">
 
-    <h2>➕ Moje rádiá</h2>
+    <h2>
+      ➕ Moje rádio
+    </h2>
+
+    <p class="empty">
+      Pridaj si vlastný internetový stream.
+    </p>
 
     <div
       id="myRadioList"
@@ -442,7 +581,9 @@
 
     <br>
 
-    <form id="radioForm" class="form">
+    <form
+      id="radioForm"
+      class="form">
 
       <input
         id="newRadioName"
@@ -474,9 +615,13 @@
 
   <section class="section">
 
-    <h2>💡 Navrhnúť rádio</h2>
+    <h2>
+      💡 Navrhnúť rádio
+    </h2>
 
-    <form id="suggestForm" class="form">
+    <form
+      id="suggestForm"
+      class="form">
 
       <input
         id="suggestName"
@@ -497,7 +642,8 @@
 
       <textarea
         id="suggestMessage"
-        placeholder="Poznámka – voliteľné"></textarea>
+        placeholder="Poznámka – voliteľné">
+      </textarea>
 
       <button type="submit">
         📤 Odoslať návrh
@@ -505,7 +651,10 @@
 
     </form>
 
-    <p id="suggestStatus" class="empty"></p>
+    <p
+      id="suggestStatus"
+      class="empty">
+    </p>
 
   </section>
 
@@ -514,7 +663,14 @@
 
   <section class="section">
 
-    <h2>📅 Program</h2>
+    <h2>
+      📅 Program
+    </h2>
+
+    <p class="empty">
+      Program sa zobrazuje podľa vybraného dátumu
+      a aktuálneho rádia.
+    </p>
 
     <div class="program-controls">
 
@@ -533,7 +689,7 @@
 
 
   <footer>
-    Rádio Player
+    Počúvam Rádiá
   </footer>
 
 </div>
@@ -542,93 +698,129 @@
 <script>
 
   /*
-   * ==========================
+   * =====================================================
    * RÁDIÁ
-   * ==========================
+   * =====================================================
    */
 
   const radios = [
+
     {
       id: "expres",
       name: "Rádio Expres",
       stream: "https://stream.bauermedia.sk/expres-hi.mp3",
       web: "https://www.bauermedia.sk",
+
+      logo:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRObKScNrVH6CHuGgHAglR-ZjGL0Crgp6whWV5GNDMzqQ&s=10",
+
       recommended: true
     },
 
     {
-      id: "radio2",
-      name: "Rádio 2",
-      stream: "",
-      web: "",
-      recommended: false
+      id: "melody",
+      name: "Rádio Melody",
+      stream: "https://stream.bauermedia.sk/melody-hi.mp3",
+      web: "https://www.bauermedia.sk",
+
+      logo: "",
+
+      recommended: true
     }
+
   ];
 
 
   /*
-   * ==========================
+   * =====================================================
    * PROGRAM
    *
-   * ZATIAĽ JE V INDEXE.
+   * Každé rádio môže mať vlastný program.
    *
-   * Neskôr ho presunieme do
-   * program.json, aby sa dal
-   * meniť každý deň bez úpravy
-   * index.html.
-   * ==========================
+   * Neskôr presunieme údaje do JSON/API,
+   * aby sa program dal pohodlne meniť.
+   * =====================================================
    */
 
   const programs = {
 
-    "2026-09-06": [
-      {
-        time: "06:00",
-        name: "Ranný program"
-      },
-      {
-        time: "09:00",
-        name: "Hudobný program"
-      },
-      {
-        time: "12:00",
-        name: "Obedný program"
-      },
-      {
-        time: "15:00",
-        name: "Popoludňajší program"
-      },
-      {
-        time: "18:00",
-        name: "Večerný program"
-      }
-    ],
+    expres: {
 
-    "2026-09-07": [
-      {
-        time: "06:00",
-        name: "Ranný program"
-      },
-      {
-        time: "10:00",
-        name: "Dopoludnie"
-      },
-      {
-        time: "14:00",
-        name: "Popoludnie"
-      }
-    ]
+      "2026-09-06": [
+        {
+          time: "06:00",
+          name: "Ranný program"
+        },
+        {
+          time: "09:00",
+          name: "Hudobný program"
+        },
+        {
+          time: "12:00",
+          name: "Obedný program"
+        },
+        {
+          time: "15:00",
+          name: "Popoludňajší program"
+        },
+        {
+          time: "18:00",
+          name: "Večerný program"
+        }
+      ],
+
+      "2026-09-07": [
+        {
+          time: "06:00",
+          name: "Ranný program"
+        },
+        {
+          time: "10:00",
+          name: "Dopoludnie"
+        },
+        {
+          time: "14:00",
+          name: "Popoludnie"
+        }
+      ]
+
+    },
+
+
+    melody: {
+
+      "2026-09-06": [
+        {
+          time: "07:00",
+          name: "Ranné Melody"
+        },
+        {
+          time: "10:00",
+          name: "Dopoludnie"
+        },
+        {
+          time: "13:00",
+          name: "Hudobné popoludnie"
+        },
+        {
+          time: "17:00",
+          name: "Večer s Melody"
+        }
+      ]
+
+    }
 
   };
 
 
   /*
-   * ==========================
+   * =====================================================
    * ELEMENTY
-   * ==========================
+   * =====================================================
    */
 
-  const radio = document.getElementById("radio");
+  const radio =
+    document.getElementById("radio");
 
   const playButton =
     document.getElementById("playButton");
@@ -644,6 +836,9 @@
 
   const radioName =
     document.getElementById("radioName");
+
+  const radioLogo =
+    document.getElementById("radioLogo");
 
   const radioWeb =
     document.getElementById("radioWeb");
@@ -669,6 +864,12 @@
   const recommended =
     document.getElementById("recommended");
 
+  const favoriteList =
+    document.getElementById("favoriteList");
+
+  const noFavorites =
+    document.getElementById("noFavorites");
+
   const myRadioList =
     document.getElementById("myRadioList");
 
@@ -692,30 +893,58 @@
 
 
   /*
-   * ==========================
+   * =====================================================
    * AKTUÁLNE RÁDIO
-   * ==========================
+   * =====================================================
    */
 
-  let currentRadio = radios[0];
+  let currentRadio =
+    radios[0];
 
+
+  /*
+   * =====================================================
+   * VÝBER RÁDIA
+   * =====================================================
+   */
 
   function selectRadio(selectedRadio) {
 
-    currentRadio = selectedRadio;
+    currentRadio =
+      selectedRadio;
 
     radio.pause();
 
-    radio.src = selectedRadio.stream;
+    radio.src =
+      selectedRadio.stream;
 
     radioName.textContent =
       selectedRadio.name;
 
-    songTitle.textContent =
-      "Názov skladby";
 
-    artist.textContent =
-      "Interpret";
+    /*
+     * LOGO
+     */
+
+    if (selectedRadio.logo) {
+
+      radioLogo.src =
+        selectedRadio.logo;
+
+      radioLogo.style.display =
+        "block";
+
+    } else {
+
+      radioLogo.style.display =
+        "none";
+
+    }
+
+
+    /*
+     * WEB
+     */
 
     if (selectedRadio.web) {
 
@@ -725,7 +954,9 @@
       try {
 
         radioWeb.textContent =
-          new URL(selectedRadio.web).hostname;
+          new URL(
+            selectedRadio.web
+          ).hostname;
 
       } catch {
 
@@ -736,190 +967,258 @@
 
     } else {
 
-      radioWeb.removeAttribute("href");
+      radioWeb.removeAttribute(
+        "href"
+      );
+
       radioWeb.textContent =
         "Web rádia nie je dostupný";
 
     }
 
-    playButton.textContent = "▶️";
+
+    /*
+     * METADÁTA
+     */
+
+    songTitle.textContent =
+      "Názov skladby";
+
+    artist.textContent =
+      "Interpret";
+
+
+    playButton.textContent =
+      "▶️";
 
     status.textContent =
       "Pripravené na prehrávanie";
 
+
     updateFavoriteButton();
+
+    renderProgram();
 
   }
 
 
   /*
-   * ==========================
+   * =====================================================
    * PREHRÁVANIE
-   * ==========================
+   * =====================================================
    */
 
-  playButton.addEventListener("click", async () => {
+  playButton.addEventListener(
+    "click",
+    async () => {
 
-    if (!currentRadio.stream) {
-
-      status.textContent =
-        "Toto rádio zatiaľ nemá stream.";
-
-      return;
-
-    }
-
-    if (radio.paused) {
-
-      status.textContent =
-        "Pripájanie k rádiu…";
-
-      try {
-
-        await radio.play();
-
-        playButton.textContent =
-          "⏸️";
+      if (!currentRadio.stream) {
 
         status.textContent =
-          "▶️ Rádio hrá";
+          "Toto rádio nemá nastavený stream.";
 
-      } catch (error) {
-
-        console.error(error);
-
-        status.textContent =
-          "Rádio sa nepodarilo spustiť.";
+        return;
 
       }
 
-    } else {
 
-      radio.pause();
+      if (radio.paused) {
+
+        status.textContent =
+          "Pripájanie k rádiu…";
+
+        try {
+
+          await radio.play();
+
+          playButton.textContent =
+            "⏸️";
+
+          status.textContent =
+            "▶️ Rádio hrá";
+
+        } catch (error) {
+
+          console.error(error);
+
+          status.textContent =
+            "Rádio sa nepodarilo spustiť.";
+
+        }
+
+      } else {
+
+        radio.pause();
+
+        playButton.textContent =
+          "▶️";
+
+        status.textContent =
+          "Pozastavené";
+
+      }
+
+    }
+  );
+
+
+  radio.addEventListener(
+    "playing",
+    () => {
+
+      playButton.textContent =
+        "⏸️";
+
+      status.textContent =
+        "▶️ Rádio hrá";
+
+    }
+  );
+
+
+  radio.addEventListener(
+    "pause",
+    () => {
 
       playButton.textContent =
         "▶️";
 
+    }
+  );
+
+
+  radio.addEventListener(
+    "waiting",
+    () => {
+
       status.textContent =
-        "Pozastavené";
+        "Načítavam stream…";
 
     }
-
-  });
-
-
-  radio.addEventListener("playing", () => {
-
-    playButton.textContent = "⏸️";
-    status.textContent = "▶️ Rádio hrá";
-
-  });
+  );
 
 
-  radio.addEventListener("pause", () => {
+  radio.addEventListener(
+    "error",
+    () => {
 
-    playButton.textContent = "▶️";
+      status.textContent =
+        "Chyba streamu alebo pripojenia.";
 
-  });
-
-
-  radio.addEventListener("waiting", () => {
-
-    status.textContent =
-      "Načítavam stream…";
-
-  });
-
-
-  radio.addEventListener("error", () => {
-
-    status.textContent =
-      "Chyba streamu alebo pripojenia.";
-
-  });
+    }
+  );
 
 
   /*
-   * ==========================
+   * =====================================================
    * HLASITOSŤ
-   * ==========================
+   * =====================================================
    */
 
-  radio.volume = 1;
+  radio.volume =
+    1;
 
-  volume.addEventListener("input", () => {
 
-    radio.volume =
-      Number(volume.value);
+  volume.addEventListener(
+    "input",
+    () => {
 
-    volumeValue.textContent =
-      Math.round(
-        Number(volume.value) * 100
-      ) + "%";
+      radio.volume =
+        Number(volume.value);
 
-  });
+      volumeValue.textContent =
+        Math.round(
+          Number(volume.value) * 100
+        ) + "%";
+
+    }
+  );
 
 
   /*
-   * ==========================
+   * =====================================================
    * OBĽÚBENÉ
-   * ==========================
+   * =====================================================
    */
 
-  function favoriteKey() {
+  function favoriteKey(
+    radioItem
+  ) {
 
     return "favorite-" +
-      currentRadio.id;
+      radioItem.id;
+
+  }
+
+
+  function isFavorite(
+    radioItem
+  ) {
+
+    return localStorage.getItem(
+      favoriteKey(radioItem)
+    ) === "true";
 
   }
 
 
   function updateFavoriteButton() {
 
-    const favorite =
-      localStorage.getItem(
-        favoriteKey()
-      ) === "true";
+    if (isFavorite(currentRadio)) {
 
-    if (favorite) {
+      favoriteButton.textContent =
+        "♥";
 
-      favoriteButton.textContent = "♥";
-      favoriteButton.classList.add("active");
+      favoriteButton.classList.add(
+        "active"
+      );
 
     } else {
 
-      favoriteButton.textContent = "♡";
-      favoriteButton.classList.remove("active");
+      favoriteButton.textContent =
+        "♡";
+
+      favoriteButton.classList.remove(
+        "active"
+      );
 
     }
 
   }
 
 
-  favoriteButton.addEventListener("click", () => {
+  favoriteButton.addEventListener(
+    "click",
+    () => {
 
-    const key = favoriteKey();
+      const key =
+        favoriteKey(currentRadio);
 
-    const current =
-      localStorage.getItem(key) === "true";
+      const value =
+        isFavorite(currentRadio);
 
-    localStorage.setItem(
-      key,
-      String(!current)
-    );
+      localStorage.setItem(
+        key,
+        String(!value)
+      );
 
-    updateFavoriteButton();
+      updateFavoriteButton();
 
-  });
+      renderFavorites();
+
+    }
+  );
 
 
   /*
-   * ==========================
-   * VYKRESLENIE RÁDIÍ
-   * ==========================
+   * =====================================================
+   * VŠETKY RÁDIÁ
+   * =====================================================
    */
 
-  function createRadioButton(item) {
+  function createRadioButton(
+    item
+  ) {
 
     const button =
       document.createElement("button");
@@ -927,82 +1226,183 @@
     button.className =
       "radio-item";
 
-    button.type = "button";
+    button.type =
+      "button";
 
-    button.textContent =
+
+    if (item.logo) {
+
+      const image =
+        document.createElement("img");
+
+      image.className =
+        "radio-item-logo";
+
+      image.src =
+        item.logo;
+
+      image.alt =
+        item.name;
+
+      button.appendChild(
+        image
+      );
+
+    }
+
+
+    const name =
+      document.createElement("span");
+
+    name.className =
+      "radio-item-name";
+
+    name.textContent =
       "📻 " + item.name;
 
-    button.addEventListener("click", () => {
+    button.appendChild(
+      name
+    );
 
-      selectRadio(item);
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+    button.addEventListener(
+      "click",
+      () => {
 
-    });
+        selectRadio(item);
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+
+      }
+    );
+
 
     return button;
 
   }
 
 
+  function getAllRadios() {
+
+    return [
+      ...radios,
+      ...getMyRadios()
+    ];
+
+  }
+
+
   function renderRadios() {
 
-    radioList.innerHTML = "";
+    radioList.innerHTML =
+      "";
 
-    radios.forEach(item => {
+    getAllRadios().forEach(
+      item => {
 
-      radioList.appendChild(
-        createRadioButton(item)
-      );
+        radioList.appendChild(
+          createRadioButton(item)
+        );
 
-    });
-
-  }
-
-
-  function renderRecommended() {
-
-    recommended.innerHTML = "";
-
-    const items =
-      radios.filter(
-        item => item.recommended
-      );
-
-    if (items.length === 0) {
-
-      recommended.innerHTML =
-        '<div class="empty">Zatiaľ nič.</div>';
-
-      return;
-
-    }
-
-    items.forEach(item => {
-
-      recommended.appendChild(
-        createRadioButton(item)
-      );
-
-    });
+      }
+    );
 
   }
-
-
-  menuButton.addEventListener("click", () => {
-
-    radioSection.classList.toggle("hidden");
-
-  });
 
 
   /*
-   * ==========================
-   * VLASTNÉ RÁDIÁ
-   * ==========================
+   * =====================================================
+   * ODPORÚČANÉ
+   * =====================================================
+   */
+
+  function renderRecommended() {
+
+    recommended.innerHTML =
+      "";
+
+    const items =
+      radios.filter(
+        item =>
+          item.recommended
+      );
+
+
+    items.forEach(
+      item => {
+
+        recommended.appendChild(
+          createRadioButton(item)
+        );
+
+      }
+    );
+
+  }
+
+
+  /*
+   * =====================================================
+   * OBĽÚBENÉ
+   * =====================================================
+   */
+
+  function renderFavorites() {
+
+    favoriteList.innerHTML =
+      "";
+
+    const items =
+      getAllRadios().filter(
+        item =>
+          isFavorite(item)
+      );
+
+
+    noFavorites.style.display =
+      items.length === 0
+        ? "block"
+        : "none";
+
+
+    items.forEach(
+      item => {
+
+        favoriteList.appendChild(
+          createRadioButton(item)
+        );
+
+      }
+    );
+
+  }
+
+
+  /*
+   * =====================================================
+   * MENU
+   * =====================================================
+   */
+
+  menuButton.addEventListener(
+    "click",
+    () => {
+
+      radioSection.classList.toggle(
+        "hidden"
+      );
+
+    }
+  );
+
+
+  /*
+   * =====================================================
+   * MOJE RÁDIÁ
+   * =====================================================
    */
 
   function getMyRadios() {
@@ -1010,7 +1410,9 @@
     try {
 
       return JSON.parse(
-        localStorage.getItem("my-radios") || "[]"
+        localStorage.getItem(
+          "my-radios"
+        ) || "[]"
       );
 
     } catch {
@@ -1022,7 +1424,9 @@
   }
 
 
-  function saveMyRadios(items) {
+  function saveMyRadios(
+    items
+  ) {
 
     localStorage.setItem(
       "my-radios",
@@ -1037,159 +1441,226 @@
     const items =
       getMyRadios();
 
-    myRadioList.innerHTML = "";
+    myRadioList.innerHTML =
+      "";
 
     noMyRadios.style.display =
       items.length === 0
         ? "block"
         : "none";
 
-    items.forEach(item => {
 
-      const wrapper =
-        document.createElement("div");
+    items.forEach(
+      item => {
 
-      const button =
-        createRadioButton(item);
+        myRadioList.appendChild(
+          createRadioButton(item)
+        );
 
-      wrapper.appendChild(button);
-
-      myRadioList.appendChild(wrapper);
-
-    });
+      }
+    );
 
   }
 
 
-  radioForm.addEventListener("submit", event => {
+  radioForm.addEventListener(
+    "submit",
+    event => {
 
-    event.preventDefault();
-
-    const name =
-      document.getElementById("newRadioName")
-        .value.trim();
-
-    const stream =
-      document.getElementById("newRadioStream")
-        .value.trim();
-
-    const web =
-      document.getElementById("newRadioWeb")
-        .value.trim();
-
-    if (!name || !stream) {
-      return;
-    }
-
-    const items =
-      getMyRadios();
-
-    const newRadio = {
-
-      id:
-        "custom-" +
-        Date.now(),
-
-      name,
-      stream,
-      web,
-      recommended: false
-
-    };
-
-    items.push(newRadio);
-
-    saveMyRadios(items);
-
-    radioForm.reset();
-
-    renderMyRadios();
-
-  });
+      event.preventDefault();
 
 
-  /*
-   * ==========================
-   * NÁVRH RÁDIA
-   *
-   * Zatiaľ sa návrh uloží
-   * lokálne v prehliadači.
-   *
-   * Neskôr môžeme pridať
-   * GitHub/API/backend, aby
-   * návrhy chodili tebe.
-   * ==========================
-   */
+      const name =
+        document
+          .getElementById(
+            "newRadioName"
+          )
+          .value
+          .trim();
 
-  suggestForm.addEventListener("submit", event => {
 
-    event.preventDefault();
+      const stream =
+        document
+          .getElementById(
+            "newRadioStream"
+          )
+          .value
+          .trim();
 
-    const suggestion = {
 
-      name:
-        document.getElementById("suggestName")
-          .value.trim(),
+      const web =
+        document
+          .getElementById(
+            "newRadioWeb"
+          )
+          .value
+          .trim();
 
-      stream:
-        document.getElementById("suggestStream")
-          .value.trim(),
 
-      web:
-        document.getElementById("suggestWeb")
-          .value.trim(),
+      if (!name || !stream) {
+        return;
+      }
 
-      message:
-        document.getElementById("suggestMessage")
-          .value.trim(),
 
-      date:
-        new Date().toISOString()
+      const items =
+        getMyRadios();
 
-    };
 
-    const suggestions =
-      JSON.parse(
-        localStorage.getItem("radio-suggestions") || "[]"
+      items.push({
+
+        id:
+          "custom-" +
+          Date.now(),
+
+        name:
+          name,
+
+        stream:
+          stream,
+
+        web:
+          web,
+
+        logo:
+          "",
+
+        recommended:
+          false
+
+      });
+
+
+      saveMyRadios(
+        items
       );
 
-    suggestions.push(suggestion);
 
-    localStorage.setItem(
-      "radio-suggestions",
-      JSON.stringify(suggestions)
-    );
+      radioForm.reset();
 
-    suggestForm.reset();
+      renderMyRadios();
+      renderRadios();
+      renderFavorites();
 
-    suggestStatus.textContent =
-      "✅ Návrh bol uložený.";
-
-  });
+    }
+  );
 
 
   /*
-   * ==========================
-   * PROGRAM PODĽA DÁTUMU
-   * ==========================
+   * =====================================================
+   * NAVRHNÚŤ RÁDIO
+   * =====================================================
+   */
+
+  suggestForm.addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+
+      const suggestion = {
+
+        name:
+          document
+            .getElementById(
+              "suggestName"
+            )
+            .value
+            .trim(),
+
+        stream:
+          document
+            .getElementById(
+              "suggestStream"
+            )
+            .value
+            .trim(),
+
+        web:
+          document
+            .getElementById(
+              "suggestWeb"
+            )
+            .value
+            .trim(),
+
+        message:
+          document
+            .getElementById(
+              "suggestMessage"
+            )
+            .value
+            .trim(),
+
+        date:
+          new Date().toISOString()
+
+      };
+
+
+      const suggestions =
+        JSON.parse(
+          localStorage.getItem(
+            "radio-suggestions"
+          ) || "[]"
+        );
+
+
+      suggestions.push(
+        suggestion
+      );
+
+
+      localStorage.setItem(
+        "radio-suggestions",
+        JSON.stringify(
+          suggestions
+        )
+      );
+
+
+      suggestForm.reset();
+
+
+      suggestStatus.textContent =
+        "✅ Návrh bol uložený.";
+
+    }
+  );
+
+
+  /*
+   * =====================================================
+   * PROGRAM
+   * =====================================================
    */
 
   function todayString() {
 
-    const date = new Date();
+    const date =
+      new Date();
 
     const year =
       date.getFullYear();
 
     const month =
-      String(date.getMonth() + 1)
-        .padStart(2, "0");
+      String(
+        date.getMonth() + 1
+      ).padStart(2, "0");
 
     const day =
-      String(date.getDate())
-        .padStart(2, "0");
+      String(
+        date.getDate()
+      ).padStart(2, "0");
 
-    return `${year}-${month}-${day}`;
+
+    return (
+      year +
+      "-" +
+      month +
+      "-" +
+      day
+    );
 
   }
 
@@ -1199,59 +1670,87 @@
     const date =
       programDate.value;
 
-    programList.innerHTML = "";
+    programList.innerHTML =
+      "";
+
+
+    const radioPrograms =
+      programs[currentRadio.id];
+
 
     const dayProgram =
-      programs[date] || [];
+      radioPrograms
+        ? radioPrograms[date] || []
+        : [];
+
 
     if (dayProgram.length === 0) {
 
       programList.innerHTML =
-        '<div class="empty">Pre tento dátum zatiaľ nie je pridaný program.</div>';
+        '<div class="empty">' +
+        'Pre tento dátum nie je pridaný program.' +
+        '</div>';
 
       return;
 
     }
 
-    dayProgram.forEach(item => {
 
-      const row =
-        document.createElement("div");
+    dayProgram.forEach(
+      item => {
 
-      row.className =
-        "program-item";
+        const row =
+          document.createElement(
+            "div"
+          );
 
-      row.innerHTML = `
-        <div class="program-time">
-          ${escapeHTML(item.time)}
-        </div>
-
-        <div>
-          ${escapeHTML(item.name)}
-        </div>
-      `;
-
-      programList.appendChild(row);
-
-    });
-
-  }
+        row.className =
+          "program-item";
 
 
-  function escapeHTML(text) {
+        const time =
+          document.createElement(
+            "div"
+          );
 
-    return String(text)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
+        time.className =
+          "program-time";
+
+        time.textContent =
+          item.time;
+
+
+        const name =
+          document.createElement(
+            "div"
+          );
+
+        name.textContent =
+          item.name;
+
+
+        row.appendChild(
+          time
+        );
+
+        row.appendChild(
+          name
+        );
+
+
+        programList.appendChild(
+          row
+        );
+
+      }
+    );
 
   }
 
 
   programDate.value =
     todayString();
+
 
   programDate.addEventListener(
     "change",
@@ -1260,46 +1759,57 @@
 
 
   /*
-   * ==========================
+   * =====================================================
    * METADÁTA
-   * ==========================
    *
-   * Prehliadač nevie spoľahlivo
-   * čítať ICY metadata z každého
-   * internetového MP3 streamu
-   * priamo cez <audio>.
+   * TU NESKÔR NAPOJÍME BACKEND/API.
    *
-   * Táto funkcia je pripravená
-   * na neskoršie napojenie na
-   * metadata API/backend.
+   * ÚDAJE:
+   *
+   * title  = názov skladby
+   * artist = interpret
+   *
+   * Metadata sa budú získavať
+   * zo streamu.
+   * =====================================================
    */
 
-  function updateMetadata(title, artistName) {
+  function updateMetadata(
+    title,
+    artistName
+  ) {
 
     songTitle.textContent =
-      title || "Názov skladby";
+      title ||
+      "Názov skladby";
 
     artist.textContent =
-      artistName || "Interpret";
+      artistName ||
+      "Interpret";
 
   }
 
 
   /*
-   * ==========================
-   * SPUSTENIE
-   * ==========================
+   * =====================================================
+   * ŠTART
+   * =====================================================
    */
 
   renderRadios();
 
   renderRecommended();
 
+  renderFavorites();
+
   renderMyRadios();
 
-  renderProgram();
+  programDate.value =
+    todayString();
 
-  selectRadio(radios[0]);
+  selectRadio(
+    radios[0]
+  );
 
 </script>
 
