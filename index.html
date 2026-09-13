@@ -177,28 +177,6 @@
       margin-top: 7px;
     }
 
-    .cast-button {
-      width: 100%;
-      border: 1px solid #ddd;
-      background: #fafafa;
-      border-radius: 10px;
-      padding: 11px;
-      text-align: left;
-      cursor: pointer;
-      font: inherit;
-      font-weight: bold;
-    }
-
-    .cast-button:hover {
-      background: #f0f2f5;
-    }
-
-    .cast-message {
-      margin-top: 8px;
-      font-size: 13px;
-      color: #666;
-    }
-
     main {
       min-height: calc(100vh - 120px);
       display: flex;
@@ -282,6 +260,10 @@
       cursor: pointer;
     }
 
+    .control-button:hover {
+      opacity: .9;
+    }
+
     .favorite-button {
       background: #f1f3f5;
       color: #222;
@@ -289,6 +271,23 @@
 
     .favorite-button.active {
       color: #e11d48;
+    }
+
+    .cast-button {
+      background: #f1f3f5;
+      color: #222;
+      font-size: 20px;
+    }
+
+    .cast-button:hover {
+      background: #e5e7eb;
+    }
+
+    .cast-message {
+      min-height: 18px;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #666;
     }
 
     .volume-box {
@@ -403,8 +402,10 @@ onclick="closeSideMenu()">
     <h3>❤️ Obľúbené</h3>
     <div id="favoritesList"></div>
   </section>  <section class="menu-section">
-    <h3>📡 Moje rádiá</h3>
-    <div id="myRadiosList"></div><form onsubmit="addMyRadio(event)">
+    <h3>📡 Moje rádiá</h3><div id="myRadiosList"></div>
+
+<form onsubmit="addMyRadio(event)">
+
   <input
     id="myRadioName"
     type="text"
@@ -422,13 +423,17 @@ onclick="closeSideMenu()">
     type="url"
     placeholder="Web rádia – voliteľné">
 
-  <button class="form-button" type="submit">
+  <button
+    class="form-button"
+    type="submit">
     ➕ Pridať rádio
   </button>
+
 </form>
 
   </section>  <section class="menu-section">
     <h3>💡 Navrhnúť rádio</h3><form onsubmit="suggestRadio(event)">
+
   <input
     id="suggestName"
     type="text"
@@ -450,24 +455,17 @@ onclick="closeSideMenu()">
     id="suggestNote"
     placeholder="Poznámka – voliteľné"></textarea>
 
-  <button class="form-button" type="submit">
+  <button
+    class="form-button"
+    type="submit">
     💡 Odoslať návrh
   </button>
+
 </form>
 
-<div id="suggestMessage" class="status"></div>
-
-  </section>  <section class="menu-section">
-    <h3>📺 Google Cast</h3><button
-  class="cast-button"
-  type="button"
-  onclick="googleCastPreparing()">
-  📺 Google Cast
-</button>
-
 <div
-  id="castMessage"
-  class="cast-message">
+  id="suggestMessage"
+  class="status">
 </div>
 
   </section></aside><main>  <section class="player"><img
@@ -476,7 +474,9 @@ onclick="closeSideMenu()">
   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRObKScNrVH6CHuGgHAglR-ZjGL0Crgp6whWV5GNDMzqQ&s=10"
   alt="Logo rádia">
 
-<h2 id="radioName" class="radio-name">
+<h2
+  id="radioName"
+  class="radio-name">
   Rádio Expres
 </h2>
 
@@ -495,11 +495,16 @@ onclick="closeSideMenu()">
     Práve hrá
   </div>
 
-  <div id="songTitle" class="song-title">
+  <div
+    id="songTitle"
+    class="song-title">
     Načítavam...
   </div>
 
-  <div id="artist" class="artist"></div>
+  <div
+    id="artist"
+    class="artist">
+  </div>
 
 </div>
 
@@ -510,7 +515,7 @@ onclick="closeSideMenu()">
     class="control-button"
     type="button"
     onclick="togglePlay()"
-    aria-label="Prehrať">
+    aria-label="Prehrať alebo pozastaviť">
     ▶
   </button>
 
@@ -523,6 +528,20 @@ onclick="closeSideMenu()">
     ♡
   </button>
 
+  <button
+    id="castButton"
+    class="control-button cast-button"
+    type="button"
+    onclick="googleCastPreparing()"
+    aria-label="Google Cast">
+    📺
+  </button>
+
+</div>
+
+<div
+  id="castMessage"
+  class="cast-message">
 </div>
 
 <div class="volume-box">
@@ -540,11 +559,16 @@ onclick="closeSideMenu()">
 
 </div>
 
-<div id="playerStatus" class="status">
+<div
+  id="playerStatus"
+  class="status">
   Pripravené
 </div>
 
-<audio id="audioPlayer" preload="none"></audio>
+<audio
+  id="audioPlayer"
+  preload="none">
+</audio>
 
   </section></main><section
   id="programSection"
@@ -595,20 +619,47 @@ onclick="closeSideMenu()">
   const programs = {
     "expres": {
       "2026-09-06": [
-        { time: "06:00", name: "Ranná šou" },
-        { time: "09:00", name: "Dopoludnie" },
-        { time: "12:00", name: "Expres popoludnie" },
-        { time: "15:00", name: "Popoludňajšie vysielanie" },
-        { time: "18:00", name: "Večer na Exprese" }
+        {
+          time: "06:00",
+          name: "Ranná šou"
+        },
+        {
+          time: "09:00",
+          name: "Dopoludnie"
+        },
+        {
+          time: "12:00",
+          name: "Expres popoludnie"
+        },
+        {
+          time: "15:00",
+          name: "Popoludňajšie vysielanie"
+        },
+        {
+          time: "18:00",
+          name: "Večer na Exprese"
+        }
       ]
     },
 
     "melody": {
       "2026-09-06": [
-        { time: "06:00", name: "Ranné Melody" },
-        { time: "10:00", name: "Dopoludnie s Melody" },
-        { time: "14:00", name: "Popoludnie" },
-        { time: "18:00", name: "Večer s Melody" }
+        {
+          time: "06:00",
+          name: "Ranné Melody"
+        },
+        {
+          time: "10:00",
+          name: "Dopoludnie s Melody"
+        },
+        {
+          time: "14:00",
+          name: "Popoludnie"
+        },
+        {
+          time: "18:00",
+          name: "Večer s Melody"
+        }
       ]
     }
   };
@@ -616,13 +667,25 @@ onclick="closeSideMenu()">
   let currentRadio = radios[0];
 
   let favorites =
-    JSON.parse(localStorage.getItem("pocuvam_favorites") || "[]");
+    JSON.parse(
+      localStorage.getItem(
+        "pocuvam_favorites"
+      ) || "[]"
+    );
 
   let myRadios =
-    JSON.parse(localStorage.getItem("pocuvam_my_radios") || "[]");
+    JSON.parse(
+      localStorage.getItem(
+        "pocuvam_my_radios"
+      ) || "[]"
+    );
 
   let suggestions =
-    JSON.parse(localStorage.getItem("pocuvam_suggestions") || "[]");
+    JSON.parse(
+      localStorage.getItem(
+        "pocuvam_suggestions"
+      ) || "[]"
+    );
 
   let metadataTimer = null;
 
@@ -630,7 +693,9 @@ onclick="closeSideMenu()">
     "https://jaroacjak.github.io/pocuvamradio/metadata.php";
 
   const audioPlayer =
-    document.getElementById("audioPlayer");
+    document.getElementById(
+      "audioPlayer"
+    );
 
   function escapeHtml(value) {
     return String(value ?? "")
@@ -669,10 +734,16 @@ onclick="closeSideMenu()">
 
   function googleCastPreparing() {
     const message =
-      document.getElementById("castMessage");
+      document.getElementById(
+        "castMessage"
+      );
 
     message.textContent =
       "Google Cast pripravujeme.";
+
+    setTimeout(() => {
+      message.textContent = "";
+    }, 4000);
   }
 
   function loadRadio(radio) {
@@ -686,42 +757,68 @@ onclick="closeSideMenu()">
     }
 
     audioPlayer.pause();
-    audioPlayer.src = radio.stream;
+
+    audioPlayer.src =
+      radio.stream;
+
     audioPlayer.load();
 
-    document.getElementById("radioName").textContent =
+    document
+      .getElementById("radioName")
+      .textContent =
       radio.name;
 
     const logo =
-      document.getElementById("radioLogo");
+      document.getElementById(
+        "radioLogo"
+      );
 
     if (radio.logo) {
       logo.src = radio.logo;
-      logo.style.display = "inline-block";
+      logo.style.display =
+        "inline-block";
     } else {
       logo.removeAttribute("src");
       logo.style.display = "none";
     }
 
     const web =
-      document.getElementById("radioWeb");
+      document.getElementById(
+        "radioWeb"
+      );
 
     if (radio.web) {
       web.href = radio.web;
+
       web.textContent =
-        radio.web.replace(/^https?:\/\//, "");
-      web.style.display = "inline-block";
+        radio.web.replace(
+          /^https?:\/\//,
+          ""
+        );
+
+      web.style.display =
+        "inline-block";
     } else {
       web.style.display = "none";
     }
 
-    document.getElementById("songTitle").textContent =
+    document
+      .getElementById("songTitle")
+      .textContent =
       "Načítavam...";
 
-    document.getElementById("artist").textContent = "";
+    document
+      .getElementById("artist")
+      .textContent = "";
 
-    document.getElementById("playerStatus").textContent =
+    document
+      .getElementById("playerStatus")
+      .textContent =
       "Pripravené";
+
+    document
+      .getElementById("castMessage")
+      .textContent = "";
 
     updateFavoriteButton();
     renderAllMenu();
@@ -730,66 +827,143 @@ onclick="closeSideMenu()">
 
   function togglePlay() {
     if (audioPlayer.paused) {
-      audioPlayer.play()
+
+      audioPlayer
+        .play()
         .then(() => {
-          document.getElementById("playButton").textContent = "❚❚";
-          document.getElementById("playerStatus").textContent =
+
+          document
+            .getElementById(
+              "playButton"
+            )
+            .textContent =
+            "❚❚";
+
+          document
+            .getElementById(
+              "playerStatus"
+            )
+            .textContent =
             "Prehráva sa";
+
         })
         .catch(() => {
-          document.getElementById("playerStatus").textContent =
+
+          document
+            .getElementById(
+              "playerStatus"
+            )
+            .textContent =
             "Stream sa nepodarilo spustiť";
+
         });
+
     } else {
+
       audioPlayer.pause();
 
-      document.getElementById("playButton").textContent = "▶";
+      document
+        .getElementById(
+          "playButton"
+        )
+        .textContent =
+        "▶";
 
-      document.getElementById("playerStatus").textContent =
+      document
+        .getElementById(
+          "playerStatus"
+        )
+        .textContent =
         "Pozastavené";
     }
   }
 
-  audioPlayer.addEventListener("play", () => {
-    document.getElementById("playButton").textContent = "❚❚";
-    document.getElementById("playerStatus").textContent =
-      "Prehráva sa";
-  });
+  audioPlayer.addEventListener(
+    "play",
+    () => {
 
-  audioPlayer.addEventListener("pause", () => {
-    document.getElementById("playButton").textContent = "▶";
-  });
+      document
+        .getElementById(
+          "playButton"
+        )
+        .textContent =
+        "❚❚";
 
-  audioPlayer.addEventListener("error", () => {
-    document.getElementById("playerStatus").textContent =
-      "Chyba pri prehrávaní streamu";
-  });
+      document
+        .getElementById(
+          "playerStatus"
+        )
+        .textContent =
+        "Prehráva sa";
+    }
+  );
+
+  audioPlayer.addEventListener(
+    "pause",
+    () => {
+
+      document
+        .getElementById(
+          "playButton"
+        )
+        .textContent =
+        "▶";
+    }
+  );
+
+  audioPlayer.addEventListener(
+    "error",
+    () => {
+
+      document
+        .getElementById(
+          "playerStatus"
+        )
+        .textContent =
+        "Chyba pri prehrávaní streamu";
+    }
+  );
 
   function changeVolume(value) {
-    audioPlayer.volume = Number(value);
+    audioPlayer.volume =
+      Number(value);
   }
 
   function isFavorite(id) {
     return favorites.some(
-      radio => radio.id === id
+      radio =>
+        radio.id === id
     );
   }
 
   function toggleFavorite() {
+
     const index =
       favorites.findIndex(
-        radio => radio.id === currentRadio.id
+        radio =>
+          radio.id ===
+          currentRadio.id
       );
 
     if (index >= 0) {
-      favorites.splice(index, 1);
+
+      favorites.splice(
+        index,
+        1
+      );
+
     } else {
-      favorites.push(currentRadio);
+
+      favorites.push(
+        currentRadio
+      );
     }
 
     localStorage.setItem(
       "pocuvam_favorites",
-      JSON.stringify(favorites)
+      JSON.stringify(
+        favorites
+      )
     );
 
     updateFavoriteButton();
@@ -797,27 +971,49 @@ onclick="closeSideMenu()">
   }
 
   function updateFavoriteButton() {
-    const button =
-      document.getElementById("favoriteButton");
 
-    if (isFavorite(currentRadio.id)) {
-      button.textContent = "♥";
-      button.classList.add("active");
+    const button =
+      document.getElementById(
+        "favoriteButton"
+      );
+
+    if (
+      isFavorite(
+        currentRadio.id
+      )
+    ) {
+
+      button.textContent =
+        "♥";
+
+      button.classList.add(
+        "active"
+      );
+
     } else {
-      button.textContent = "♡";
-      button.classList.remove("active");
+
+      button.textContent =
+        "♡";
+
+      button.classList.remove(
+        "active"
+      );
     }
   }
 
   function removeFavorite(id) {
+
     favorites =
       favorites.filter(
-        radio => radio.id !== id
+        radio =>
+          radio.id !== id
       );
 
     localStorage.setItem(
       "pocuvam_favorites",
-      JSON.stringify(favorites)
+      JSON.stringify(
+        favorites
+      )
     );
 
     renderFavorites();
@@ -825,121 +1021,166 @@ onclick="closeSideMenu()">
   }
 
   function renderRadioList() {
+
     const container =
-      document.getElementById("radioList");
+      document.getElementById(
+        "radioList"
+      );
 
     container.innerHTML = "";
 
-    radios.forEach(radio => {
-      const button =
-        document.createElement("button");
+    radios.forEach(
+      radio => {
 
-      button.type = "button";
+        const button =
+          document.createElement(
+            "button"
+          );
 
-      button.className =
-        "radio-item" +
-        (currentRadio.id === radio.id
-          ? " active"
-          : "");
+        button.type = "button";
 
-      button.innerHTML = `
-        <span class="item-title">
-          📻 ${escapeHtml(radio.name)}
-        </span>
-        <span class="item-small">
-          Kliknutím počúvať
-        </span>
-      `;
+        button.className =
+          "radio-item" +
+          (
+            currentRadio.id ===
+            radio.id
+              ? " active"
+              : ""
+          );
 
-      button.onclick = () => {
-        selectRadio(radio);
-      };
+        button.innerHTML = `
+          <span class="item-title">
+            📻 ${escapeHtml(radio.name)}
+          </span>
 
-      container.appendChild(button);
-    });
+          <span class="item-small">
+            Kliknutím počúvať
+          </span>
+        `;
+
+        button.onclick = () => {
+          selectRadio(radio);
+        };
+
+        container.appendChild(
+          button
+        );
+      }
+    );
   }
 
   function renderRecommended() {
+
     const container =
-      document.getElementById("recommendedList");
+      document.getElementById(
+        "recommendedList"
+      );
 
     container.innerHTML = "";
 
     const recommended =
-      radios.filter(radio => radio.recommended);
+      radios.filter(
+        radio =>
+          radio.recommended
+      );
 
     if (!recommended.length) {
+
       container.innerHTML =
         '<div class="empty">Žiadne odporúčané rádiá.</div>';
 
       return;
     }
 
-    recommended.forEach(radio => {
-      const button =
-        document.createElement("button");
+    recommended.forEach(
+      radio => {
 
-      button.type = "button";
-      button.className = "recommended-item";
+        const button =
+          document.createElement(
+            "button"
+          );
 
-      button.innerHTML = `
-        <span class="item-title">
-          ⭐ ${escapeHtml(radio.name)}
-        </span>
-      `;
+        button.type = "button";
+        button.className =
+          "recommended-item";
 
-      button.onclick = () => {
-        selectRadio(radio);
-      };
+        button.innerHTML = `
+          <span class="item-title">
+            ⭐ ${escapeHtml(radio.name)}
+          </span>
+        `;
 
-      container.appendChild(button);
-    });
+        button.onclick = () => {
+          selectRadio(radio);
+        };
+
+        container.appendChild(
+          button
+        );
+      }
+    );
   }
 
   function renderFavorites() {
+
     const container =
-      document.getElementById("favoritesList");
+      document.getElementById(
+        "favoritesList"
+      );
 
     container.innerHTML = "";
 
     if (!favorites.length) {
+
       container.innerHTML =
         '<div class="empty">Zatiaľ nemáš obľúbené rádio.</div>';
 
       return;
     }
 
-    favorites.forEach(radio => {
-      const wrapper =
-        document.createElement("div");
+    favorites.forEach(
+      radio => {
 
-      wrapper.className = "favorite-item";
+        const wrapper =
+          document.createElement(
+            "div"
+          );
 
-      wrapper.innerHTML = `
-        <div
-          onclick="selectFavoriteRadio('${escapeJs(radio.id)}')"
-          style="cursor:pointer;">
-          <span class="item-title">
-            ❤️ ${escapeHtml(radio.name)}
-          </span>
-        </div>
+        wrapper.className =
+          "favorite-item";
 
-        <button
-          class="danger-button"
-          type="button"
-          onclick="removeFavorite('${escapeJs(radio.id)}')">
-          Odstrániť
-        </button>
-      `;
+        wrapper.innerHTML = `
+          <div
+            onclick="selectFavoriteRadio('${escapeJs(radio.id)}')"
+            style="cursor:pointer;">
 
-      container.appendChild(wrapper);
-    });
+            <span class="item-title">
+              ❤️ ${escapeHtml(radio.name)}
+            </span>
+
+          </div>
+
+          <button
+            class="danger-button"
+            type="button"
+            onclick="removeFavorite('${escapeJs(radio.id)}')">
+            Odstrániť
+          </button>
+        `;
+
+        container.appendChild(
+          wrapper
+        );
+      }
+    );
   }
 
   function selectFavoriteRadio(id) {
+
     const radio =
       favorites.find(
-        item => item.id === id
+        item =>
+          item.id === id
       );
 
     if (radio) {
@@ -948,53 +1189,69 @@ onclick="closeSideMenu()">
   }
 
   function renderMyRadios() {
+
     const container =
-      document.getElementById("myRadiosList");
+      document.getElementById(
+        "myRadiosList"
+      );
 
     container.innerHTML = "";
 
     if (!myRadios.length) {
+
       container.innerHTML =
         '<div class="empty">Zatiaľ nemáš vlastné rádiá.</div>';
 
       return;
     }
 
-    myRadios.forEach(radio => {
-      const wrapper =
-        document.createElement("div");
+    myRadios.forEach(
+      radio => {
 
-      wrapper.className = "my-radio-item";
+        const wrapper =
+          document.createElement(
+            "div"
+          );
 
-      wrapper.innerHTML = `
-        <div
-          onclick="selectMyRadio('${escapeJs(radio.id)}')"
-          style="cursor:pointer;">
-          <span class="item-title">
-            📡 ${escapeHtml(radio.name)}
-          </span>
+        wrapper.className =
+          "my-radio-item";
 
-          <span class="item-small">
-            Vlastné rádio
-          </span>
-        </div>
+        wrapper.innerHTML = `
+          <div
+            onclick="selectMyRadio('${escapeJs(radio.id)}')"
+            style="cursor:pointer;">
 
-        <button
-          class="danger-button"
-          type="button"
-          onclick="deleteMyRadio('${escapeJs(radio.id)}')">
-          Odstrániť
-        </button>
-      `;
+            <span class="item-title">
+              📡 ${escapeHtml(radio.name)}
+            </span>
 
-      container.appendChild(wrapper);
-    });
+            <span class="item-small">
+              Vlastné rádio
+            </span>
+
+          </div>
+
+          <button
+            class="danger-button"
+            type="button"
+            onclick="deleteMyRadio('${escapeJs(radio.id)}')">
+            Odstrániť
+          </button>
+        `;
+
+        container.appendChild(
+          wrapper
+        );
+      }
+    );
   }
 
   function selectMyRadio(id) {
+
     const radio =
       myRadios.find(
-        item => item.id === id
+        item =>
+          item.id === id
       );
 
     if (radio) {
@@ -1015,27 +1272,46 @@ onclick="closeSideMenu()">
   }
 
   function addMyRadio(event) {
+
     event.preventDefault();
 
     const name =
-      document.getElementById("myRadioName").value.trim();
+      document
+        .getElementById(
+          "myRadioName"
+        )
+        .value
+        .trim();
 
     const stream =
-      document.getElementById("myRadioStream").value.trim();
+      document
+        .getElementById(
+          "myRadioStream"
+        )
+        .value
+        .trim();
 
     const web =
-      document.getElementById("myRadioWeb").value.trim();
+      document
+        .getElementById(
+          "myRadioWeb"
+        )
+        .value
+        .trim();
 
     if (!name || !stream) {
       return;
     }
 
     const radio = {
+
       id:
         "my-" +
         Date.now() +
         "-" +
-        Math.random().toString(36).slice(2),
+        Math.random()
+          .toString(36)
+          .slice(2),
 
       name,
       stream,
@@ -1045,16 +1321,34 @@ onclick="closeSideMenu()">
       custom: true
     };
 
-    myRadios.push(radio);
+    myRadios.push(
+      radio
+    );
 
     localStorage.setItem(
       "pocuvam_my_radios",
-      JSON.stringify(myRadios)
+      JSON.stringify(
+        myRadios
+      )
     );
 
-    document.getElementById("myRadioName").value = "";
-    document.getElementById("myRadioStream").value = "";
-    document.getElementById("myRadioWeb").value = "";
+    document
+      .getElementById(
+        "myRadioName"
+      )
+      .value = "";
+
+    document
+      .getElementById(
+        "myRadioStream"
+      )
+      .value = "";
+
+    document
+      .getElementById(
+        "myRadioWeb"
+      )
+      .value = "";
 
     renderMyRadios();
 
@@ -1062,76 +1356,150 @@ onclick="closeSideMenu()">
   }
 
   function deleteMyRadio(id) {
+
     myRadios =
       myRadios.filter(
-        radio => radio.id !== id
+        radio =>
+          radio.id !== id
       );
 
     localStorage.setItem(
       "pocuvam_my_radios",
-      JSON.stringify(myRadios)
+      JSON.stringify(
+        myRadios
+      )
     );
 
     renderMyRadios();
 
-    if (currentRadio.id === id) {
-      loadRadio(radios[0]);
+    if (
+      currentRadio.id === id
+    ) {
+      loadRadio(
+        radios[0]
+      );
     }
   }
 
   function suggestRadio(event) {
+
     event.preventDefault();
 
     const name =
-      document.getElementById("suggestName").value.trim();
+      document
+        .getElementById(
+          "suggestName"
+        )
+        .value
+        .trim();
 
     const stream =
-      document.getElementById("suggestStream").value.trim();
+      document
+        .getElementById(
+          "suggestStream"
+        )
+        .value
+        .trim();
 
     const web =
-      document.getElementById("suggestWeb").value.trim();
+      document
+        .getElementById(
+          "suggestWeb"
+        )
+        .value
+        .trim();
 
     const note =
-      document.getElementById("suggestNote").value.trim();
+      document
+        .getElementById(
+          "suggestNote"
+        )
+        .value
+        .trim();
 
     if (!name || !stream) {
       return;
     }
 
     suggestions.push({
+
       id: Date.now(),
+
       name,
+
       stream,
+
       web,
+
       note,
-      date: new Date().toISOString()
+
+      date:
+        new Date()
+          .toISOString()
     });
 
     localStorage.setItem(
       "pocuvam_suggestions",
-      JSON.stringify(suggestions)
+      JSON.stringify(
+        suggestions
+      )
     );
 
-    document.getElementById("suggestName").value = "";
-    document.getElementById("suggestStream").value = "";
-    document.getElementById("suggestWeb").value = "";
-    document.getElementById("suggestNote").value = "";
+    document
+      .getElementById(
+        "suggestName"
+      )
+      .value = "";
 
-    document.getElementById("suggestMessage").textContent =
+    document
+      .getElementById(
+        "suggestStream"
+      )
+      .value = "";
+
+    document
+      .getElementById(
+        "suggestWeb"
+      )
+      .value = "";
+
+    document
+      .getElementById(
+        "suggestNote"
+      )
+      .value = "";
+
+    document
+      .getElementById(
+        "suggestMessage"
+      )
+      .textContent =
       "Návrh bol uložený.";
 
-    document.getElementById("suggestMessage").style.color =
+    document
+      .getElementById(
+        "suggestMessage"
+      )
+      .style.color =
       "green";
   }
 
   function showProgram() {
+
     const date =
-      document.getElementById("programDate").value;
+      document
+        .getElementById(
+          "programDate"
+        )
+        .value;
 
     const container =
-      document.getElementById("programContent");
+      document.getElementById(
+        "programContent"
+      );
 
     if (!date) {
+
       container.innerHTML =
         "Vyber dátum programu.";
 
@@ -1139,9 +1507,15 @@ onclick="closeSideMenu()">
     }
 
     const radioProgram =
-      programs[currentRadio.id];
+      programs[
+        currentRadio.id
+      ];
 
-    if (!radioProgram || !radioProgram[date]) {
+    if (
+      !radioProgram ||
+      !radioProgram[date]
+    ) {
+
       container.innerHTML =
         "Pre toto rádio a tento dátum program zatiaľ nie je dostupný.";
 
@@ -1152,6 +1526,7 @@ onclick="closeSideMenu()">
       radioProgram[date];
 
     if (!entries.length) {
+
       container.innerHTML =
         "Program pre tento deň nie je dostupný.";
 
@@ -1159,53 +1534,68 @@ onclick="closeSideMenu()">
     }
 
     container.innerHTML =
-      entries.map(item => `
-        <div class="program-row">
-          <div class="program-time">
-            ${escapeHtml(item.time)}
-          </div>
+      entries
+        .map(
+          item => `
 
-          <div>
-            <div class="program-name">
-              ${escapeHtml(item.name)}
-            </div>
+            <div class="program-row">
 
-            <div class="program-radio-name">
-              ${escapeHtml(currentRadio.name)}
+              <div class="program-time">
+                ${escapeHtml(item.time)}
+              </div>
+
+              <div>
+
+                <div class="program-name">
+                  ${escapeHtml(item.name)}
+                </div>
+
+                <div class="program-radio-name">
+                  ${escapeHtml(currentRadio.name)}
+                </div>
+
+              </div>
+
             </div>
-          </div>
-        </div>
-      `).join("");
+          `
+        )
+        .join("");
   }
 
   async function loadMetadata() {
-    if (!currentRadio) return;
+
+    if (!currentRadio) {
+      return;
+    }
 
     try {
+
       const url =
         METADATA_SERVER +
         "?radio=" +
-        encodeURIComponent(currentRadio.id) +
+        encodeURIComponent(
+          currentRadio.id
+        ) +
         "&t=" +
         Date.now();
 
       const response =
-        await fetch(url, {
-          cache: "no-store"
-        });
+        await fetch(
+          url,
+          {
+            cache:
+              "no-store"
+          }
+        );
 
       if (!response.ok) {
-        throw new Error("Metadata server error");
+        throw new Error(
+          "Metadata server error"
+        );
       }
 
       const data =
         await response.json();
-
-      if (currentRadio.id !== data.radio &&
-          data.radio &&
-          data.radio !== currentRadio.id) {
-        return;
-      }
 
       const title =
         data.title || "";
@@ -1214,14 +1604,24 @@ onclick="closeSideMenu()">
         data.artist || "";
 
       if (title) {
-        document.getElementById("songTitle").textContent =
+
+        document
+          .getElementById(
+            "songTitle"
+          )
+          .textContent =
           title;
       }
 
-      document.getElementById("artist").textContent =
+      document
+        .getElementById(
+          "artist"
+        )
+        .textContent =
         artist;
 
     } catch (error) {
+
       /*
         GitHub Pages PHP nespúšťa.
         METADATA_SERVER musí byť neskôr
@@ -1231,6 +1631,7 @@ onclick="closeSideMenu()">
   }
 
   function startMetadata() {
+
     loadMetadata();
 
     metadataTimer =
@@ -1241,12 +1642,19 @@ onclick="closeSideMenu()">
   }
 
   function initializeApp() {
+
     audioPlayer.volume = 1;
 
-    document.getElementById("programDate").value =
+    document
+      .getElementById(
+        "programDate"
+      )
+      .value =
       "2026-09-06";
 
-    loadRadio(radios[0]);
+    loadRadio(
+      radios[0]
+    );
 
     showProgram();
 
