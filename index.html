@@ -623,6 +623,9 @@
   let myRadios =
     JSON.parse(localStorage.getItem("myRadios") || "[]");
 
+  let suggestions =
+    JSON.parse(localStorage.getItem("suggestions") || "[]");
+
   let metadataTimer = null;
 
 
@@ -632,13 +635,43 @@
     ============================================================
 
     DÔLEŽITÉ:
-    Toto musí byť URL na serveri, ktorý podporuje PHP.
-
     GitHub Pages PHP NESPÚŠŤA.
+    Táto URL preto bude fungovať iba vtedy,
+    ak metadata.php presunieš na PHP server.
   */
 
   const METADATA_SERVER =
     "https://jaroacjak.github.io/pocuvamradio/metadata.php";
+
+
+  /*
+    ============================================================
+    POMOCNÉ FUNKCIE
+    ============================================================
+  */
+
+  function escapeHtml(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  function escapeJs(value) {
+
+    return String(value ?? "")
+      .replace(/\\/g, "\\\\")
+      .replace(/'/g, "\\'")
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, "\\n")
+      .replace(/\r/g, "\\r");
+
+  }
 
 
   /*
@@ -651,7 +684,8 @@
 
     currentRadio = radio;
 
-    const audio = document.getElementById("audio");
+    const audio =
+      document.getElementById("audio");
 
     audio.pause();
 
@@ -668,6 +702,7 @@
 
     document.getElementById("status").textContent =
       "Pripravené";
+
 
     /*
       Logo
@@ -1128,8 +1163,10 @@
       card.className = "card";
 
       card.innerHTML = `
-        <div class="card-name">
-          ${escapeHtml(radio.name)}
+        <div>
+          <div class="card-name">
+            ${escapeHtml(radio.name)}
+          </div>
         </div>
 
         <div class="card-actions">
@@ -1145,7 +1182,7 @@
             class="small-btn"
             onclick="removeFavorite('${escapeJs(radio.id)}')"
           >
-            ❌
+            ❌ Odstrániť
           </button>
 
         </div>
@@ -1157,6 +1194,12 @@
 
   }
 
+
+  /*
+    ============================================================
+    ODSTRÁNENIE Z OBĽÚBENÝCH
+    ============================================================
+  */
 
   function removeFavorite(id) {
 
@@ -1193,26 +1236,31 @@
     const web =
       document.getElementById("myRadioWeb").value.trim();
 
-
-    const id =
-      "my_" +
-      Date.now();
+    if (!name || !stream) {
+      return;
+    }
 
 
     const radio = {
 
-      id: id,
+      id:
+        "custom-" +
+        Date.now(),
+
       name: name,
+
       stream: stream,
+
       web: web,
+
       logo: "",
+
       recommended: false
 
     };
 
 
     myRadios.push(radio);
-
 
     localStorage.setItem(
       "myRadios",
@@ -1227,8 +1275,6 @@
 
     renderMyRadios();
     renderRadioList();
-
-    alert("Rádio bolo pridané.");
 
   }
 
@@ -1261,24 +1307,10 @@
       card.className = "card";
 
       card.innerHTML = `
-
         <div>
           <div class="card-name">
             ${escapeHtml(radio.name)}
           </div>
-
-          ${
-            radio.web
-              ? `<div>
-                   <a href="${escapeHtml(radio.web)}"
-                      target="_blank"
-                      rel="noopener">
-                     Web
-                   </a>
-                 </div>`
-              : ""
-          }
-
         </div>
 
         <div class="card-actions">
@@ -1294,11 +1326,10 @@
             class="small-btn"
             onclick="deleteMyRadio('${escapeJs(radio.id)}')"
           >
-            🗑️
+            🗑️ Vymazať
           </button>
 
         </div>
-
       `;
 
       container.appendChild(card);
@@ -1328,10 +1359,16 @@
     );
 
 
+    if (currentRadio.id === id) {
+
+      loadRadio(radios[0]);
+
+    }
+
+
     renderMyRadios();
     renderFavorites();
     renderRadioList();
-    updateFavoriteButton();
 
   }
 
@@ -1359,25 +1396,35 @@
       document.getElementById("suggestNote").value.trim();
 
 
-    const suggestions =
-      JSON.parse(
-        localStorage.getItem("radioSuggestions") || "[]"
-      );
+    if (!name || !stream) {
+      return;
+    }
 
 
-    suggestions.push({
+    const suggestion = {
+
+      id:
+        Date.now(),
 
       name: name,
-      stream: stream,
-      web: web,
-      note: note,
-      date: new Date().toISOString()
 
-    });
+      stream: stream,
+
+      web: web,
+
+      note: note,
+
+      date:
+        new Date().toISOString()
+
+    };
+
+
+    suggestions.push(suggestion);
 
 
     localStorage.setItem(
-      "radioSuggestions",
+      "suggestions",
       JSON.stringify(suggestions)
     );
 
@@ -1388,10 +1435,10 @@
     document.getElementById("suggestNote").value = "";
 
 
-    document.getElementById(
-      "suggestionMessage"
-    ).innerHTML =
-      `<p>✅ Ďakujeme za návrh rádia!</p>`;
+    document.getElementById("suggestionMessage").innerHTML =
+      `<p style="color:green;">
+        ✅ Ďakujem za návrh rádia!
+      </p>`;
 
   }
 
@@ -1414,21 +1461,12 @@
       document.getElementById("programContent");
 
 
-    title.innerHTML =
-      `<h3>📻 ${escapeHtml(currentRadio.name)}</h3>`;
-
+    title.innerHTML = "";
     content.innerHTML = "";
 
 
     if (!date) {
-
-      content.innerHTML =
-        `<div class="empty">
-          Vyber dátum programu.
-        </div>`;
-
       return;
-
     }
 
 
@@ -1436,11 +1474,11 @@
       programs[currentRadio.id];
 
 
-    if (!radioProgram || !radioProgram[date]) {
+    if (!radioProgram) {
 
       content.innerHTML =
         `<div class="empty">
-          Program pre tento dátum zatiaľ nie je dostupný.
+          Pre toto rádio zatiaľ nie je dostupný program.
         </div>`;
 
       return;
@@ -1448,68 +1486,68 @@
     }
 
 
-    radioProgram[date].forEach(item => {
+    const dayProgram =
+      radioProgram[date];
 
-      const div =
+
+    if (!dayProgram || dayProgram.length === 0) {
+
+      content.innerHTML =
+        `<div class="empty">
+          Pre vybraný dátum nie je dostupný program.
+        </div>`;
+
+      return;
+
+    }
+
+
+    title.innerHTML =
+      `<h3>
+        ${escapeHtml(currentRadio.name)}
+      </h3>`;
+
+
+    const day =
+      document.createElement("div");
+
+    day.className = "program-day";
+
+
+    dayProgram.forEach(item => {
+
+      const programItem =
         document.createElement("div");
 
-      div.className = "program-item";
+      programItem.className = "program-item";
 
-      div.innerHTML = `
+      programItem.innerHTML = `
         <span class="program-time">
           ${escapeHtml(item.time)}
         </span>
         ${escapeHtml(item.name)}
       `;
 
-      content.appendChild(div);
+      day.appendChild(programItem);
 
     });
+
+
+    content.appendChild(day);
 
   }
 
 
   /*
     ============================================================
-    AUTOMATICKÉ METADATA
+    METADATA
     ============================================================
   */
 
-  function startMetadata() {
-
-    clearInterval(metadataTimer);
-
-    loadMetadata();
-
-    metadataTimer =
-      setInterval(loadMetadata, 10000);
-
-  }
-
-
   async function loadMetadata() {
 
-    const audio =
-      document.getElementById("audio");
-
-
-    if (audio.paused) {
+    if (!currentRadio) {
       return;
-    }
-
-
-    /*
-      Ak backend ešte nie je nastavený,
-      nebudeme robiť požiadavku.
-    */
-
-    if (
-      !METADATA_SERVER ||
-      METADATA_SERVER.includes("TVOJ-PHP-SERVER")
-    ) {
-
-      return;
-
     }
 
 
@@ -1542,61 +1580,57 @@
       }
 
 
-      if (data.title) {
+      const title =
+        data.title || "";
 
-        document.getElementById(
-          "songTitle"
-        ).textContent =
-          data.title;
+      const artist =
+        data.artist || "";
+
+
+      if (title) {
+
+        document.getElementById("songTitle").textContent =
+          title;
 
       }
 
 
-      if (data.artist) {
+      if (artist) {
 
-        document.getElementById(
-          "artistName"
-        ).textContent =
-          data.artist;
+        document.getElementById("artistName").textContent =
+          artist;
+
+      } else {
+
+        document.getElementById("artistName").textContent =
+          "";
 
       }
 
 
     } catch (error) {
 
-      console.log(
-        "Metadata sa nepodarilo načítať:",
-        error
-      );
+      /*
+        Metadata nie je dostupná.
+        Prehrávanie rádia pokračuje ďalej.
+      */
 
     }
 
   }
 
 
-  /*
-    ============================================================
-    BEZPEČNÉ VLOŽENIE TEXTU
-    ============================================================
-  */
+  function startMetadata() {
 
-  function escapeHtml(value) {
+    clearInterval(metadataTimer);
 
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+    loadMetadata();
 
-  }
-
-
-  function escapeJs(value) {
-
-    return String(value)
-      .replace(/\\/g, "\\\\")
-      .replace(/'/g, "\\'");
+    metadataTimer =
+      setInterval(
+        loadMetadata,
+        10000
+      );
 
   }
 
@@ -1609,46 +1643,55 @@
 
   function initializeApp() {
 
-    /*
-      Predvolené rádio = Expres
-    */
-
     loadRadio(currentRadio);
 
-
-    /*
-      Nastavenie hlasitosti
-    */
-
-    document.getElementById("audio").volume =
-      document.getElementById("volume").value;
-
-
-    /*
-      Vykreslenie všetkých častí
-    */
-
-    renderRadioList();
     renderRecommended();
+
     renderFavorites();
+
     renderMyRadios();
 
+    renderRadioList();
+
+    changeVolume();
+
 
     /*
-      Dnešný dátum
+      Predvolený dátum programu.
+      Použije sa aktuálny dátum.
     */
 
     const today =
-      new Date().toISOString().split("T")[0];
+      new Date();
 
-    document.getElementById(
-      "programDate"
-    ).value = today;
+    const year =
+      today.getFullYear();
+
+    const month =
+      String(today.getMonth() + 1).padStart(2, "0");
+
+    const day =
+      String(today.getDate()).padStart(2, "0");
+
+
+    const dateString =
+      `${year}-${month}-${day}`;
+
+
+    document.getElementById("programDate").value =
+      dateString;
+
 
     showProgram();
 
   }
 
+
+  /*
+    ============================================================
+    SPUSTENIE
+    ============================================================
+  */
 
   initializeApp();
 
