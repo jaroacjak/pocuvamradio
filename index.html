@@ -1,8 +1,6 @@
-<!DOCTYPE html><html lang="sk">
-<head>
+<!DOCTYPE html><html lang="sk"><head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Počúvam Rádiá</title>  <style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Počúvam Rádiá</title>  <!-- Google Cast Web Sender SDK -->  <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>  <style>
     * {
       box-sizing: border-box;
     }
@@ -281,6 +279,11 @@
 
     .cast-button:hover {
       background: #e5e7eb;
+    }
+
+    .cast-button.cast-connected {
+      background: #111827;
+      color: white;
     }
 
     .cast-message {
@@ -732,6 +735,13 @@ onclick="closeSideMenu()">
       .classList.remove("open");
   }
 
+  /*
+   * Táto funkcia zostáva kvôli kompatibilite
+   * s existujúcim tlačidlom.
+   *
+   * cast.js ju po načítaní nahradí
+   * skutočným Google Cast ovládaním.
+   */
   function googleCastPreparing() {
     const message =
       document.getElementById(
@@ -750,6 +760,22 @@ onclick="closeSideMenu()">
     if (!radio) return;
 
     currentRadio = radio;
+
+    /*
+     * Odovzdanie aktuálneho rádia do Castu.
+     *
+     * Ak Cast nie je pripojený, iba sa uloží
+     * aktuálne rádio a pri pripojení sa použije.
+     */
+    if (
+      window.PocuvamRadiaCast &&
+      typeof window.PocuvamRadiaCast.setRadio ===
+        "function"
+    ) {
+      window.PocuvamRadiaCast.setRadio(
+        radio
+      );
+    }
 
     if (metadataTimer) {
       clearInterval(metadataTimer);
@@ -1148,73 +1174,6 @@ onclick="closeSideMenu()">
 
         wrapper.className =
           "favorite-item";
-
-        wrapper.innerHTML = `
-          <div
-            onclick="selectFavoriteRadio('${escapeJs(radio.id)}')"
-            style="cursor:pointer;">
-
-            <span class="item-title">
-              ❤️ ${escapeHtml(radio.name)}
-            </span>
-
-          </div>
-
-          <button
-            class="danger-button"
-            type="button"
-            onclick="removeFavorite('${escapeJs(radio.id)}')">
-            Odstrániť
-          </button>
-        `;
-
-        container.appendChild(
-          wrapper
-        );
-      }
-    );
-  }
-
-  function selectFavoriteRadio(id) {
-
-    const radio =
-      favorites.find(
-        item =>
-          item.id === id
-      );
-
-    if (radio) {
-      selectRadio(radio);
-    }
-  }
-
-  function renderMyRadios() {
-
-    const container =
-      document.getElementById(
-        "myRadiosList"
-      );
-
-    container.innerHTML = "";
-
-    if (!myRadios.length) {
-
-      container.innerHTML =
-        '<div class="empty">Zatiaľ nemáš vlastné rádiá.</div>';
-
-      return;
-    }
-
-    myRadios.forEach(
-      radio => {
-
-        const wrapper =
-          document.createElement(
-            "div"
-          );
-
-        wrapper.className =
-          "my-radio-item";
 
         wrapper.innerHTML = `
           <div
@@ -1620,6 +1579,23 @@ onclick="closeSideMenu()">
         .textContent =
         artist;
 
+      /*
+       * Ak je Cast aktívny, aktualizujeme
+       * aj názov skladby na Cast zariadení.
+       */
+      if (
+        window.PocuvamRadiaCast &&
+        typeof window.PocuvamRadiaCast.updateMetadata ===
+          "function"
+      ) {
+
+        window.PocuvamRadiaCast.updateMetadata(
+          title,
+          artist
+        );
+
+      }
+
     } catch (error) {
 
       /*
@@ -1663,6 +1639,9 @@ onclick="closeSideMenu()">
 
   initializeApp();
 </script>
+
+<!-- Google Cast ovládanie aplikácie -->
+<script src="cast.js"></script>
 
 </body>
 </html>
