@@ -1,6 +1,14 @@
-<!DOCTYPE html><html lang="sk"><head>
+<!DOCTYPE html>
+<html lang="sk">
+<head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Počúvam Rádiá</title>  <!-- Google Cast Web Sender SDK -->  <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>  <style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Počúvam Rádiá</title>
+
+  <!-- Google Cast Web Sender SDK -->
+  <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+
+  <style>
     * {
       box-sizing: border-box;
     }
@@ -374,232 +382,283 @@
         width: 320px;
       }
     }
-  </style></head><body><header>
-  <h1>Počúvam Rádiá</h1><button
-class="menu-button"
-type="button"
-aria-label="Otvoriť menu"
-onclick="toggleSideMenu()">
-☰
-</button>
+  </style>
+</head>
 
-</header><div
+<body>
+
+<header>
+  <h1>Počúvam Rádiá</h1>
+
+  <button
+    class="menu-button"
+    type="button"
+    aria-label="Otvoriť menu"
+    onclick="toggleSideMenu()">
+    ☰
+  </button>
+</header>
+
+<div
   id="menuOverlay"
   class="overlay"
   onclick="closeSideMenu()">
-</div><aside id="sideMenu" class="side-menu"><button
-class="close-menu"
-type="button"
-aria-label="Zavrieť menu"
-onclick="closeSideMenu()">
-×
-</button>
+</div>
 
-  <h2>Menu</h2>  <section class="menu-section">
+<aside id="sideMenu" class="side-menu">
+
+  <button
+    class="close-menu"
+    type="button"
+    aria-label="Zavrieť menu"
+    onclick="closeSideMenu()">
+    ×
+  </button>
+
+  <h2>Menu</h2>
+
+  <section class="menu-section">
     <h3>📻 Rádiá</h3>
     <div id="radioList"></div>
-  </section>  <section class="menu-section">
+  </section>
+
+  <section class="menu-section">
     <h3>⭐ Odporúčané</h3>
     <div id="recommendedList"></div>
-  </section>  <section class="menu-section">
+  </section>
+
+  <section class="menu-section">
     <h3>❤️ Obľúbené</h3>
     <div id="favoritesList"></div>
-  </section>  <section class="menu-section">
-    <h3>📡 Moje rádiá</h3><div id="myRadiosList"></div>
+  </section>
 
-<form onsubmit="addMyRadio(event)">
+  <section class="menu-section">
 
-  <input
-    id="myRadioName"
-    type="text"
-    placeholder="Názov rádia"
-    required>
+    <h3>📡 Moje rádiá</h3>
 
-  <input
-    id="myRadioStream"
-    type="url"
-    placeholder="Stream URL"
-    required>
+    <div id="myRadiosList"></div>
 
-  <input
-    id="myRadioWeb"
-    type="url"
-    placeholder="Web rádia – voliteľné">
+    <form onsubmit="addMyRadio(event)">
 
-  <button
-    class="form-button"
-    type="submit">
-    ➕ Pridať rádio
-  </button>
+      <input
+        id="myRadioName"
+        type="text"
+        placeholder="Názov rádia"
+        required>
 
-</form>
+      <input
+        id="myRadioStream"
+        type="url"
+        placeholder="Stream URL"
+        required>
 
-  </section>  <section class="menu-section">
-    <h3>💡 Navrhnúť rádio</h3><form onsubmit="suggestRadio(event)">
+      <input
+        id="myRadioWeb"
+        type="url"
+        placeholder="Web rádia – voliteľné">
 
-  <input
-    id="suggestName"
-    type="text"
-    placeholder="Názov rádia"
-    required>
+      <button
+        class="form-button"
+        type="submit">
+        ➕ Pridať rádio
+      </button>
 
-  <input
-    id="suggestStream"
-    type="url"
-    placeholder="Stream URL"
-    required>
+    </form>
 
-  <input
-    id="suggestWeb"
-    type="url"
-    placeholder="Web rádia – voliteľné">
+  </section>
 
-  <textarea
-    id="suggestNote"
-    placeholder="Poznámka – voliteľné"></textarea>
+  <section class="menu-section">
 
-  <button
-    class="form-button"
-    type="submit">
-    💡 Odoslať návrh
-  </button>
+    <h3>💡 Navrhnúť rádio</h3>
 
-</form>
+    <form onsubmit="suggestRadio(event)">
 
-<div
-  id="suggestMessage"
-  class="status">
-</div>
+      <input
+        id="suggestName"
+        type="text"
+        placeholder="Názov rádia"
+        required>
 
-  </section></aside><main>  <section class="player"><img
-  id="radioLogo"
-  class="radio-logo"
-  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRObKScNrVH6CHuGgHAglR-ZjGL0Crgp6whWV5GNDMzqQ&s=10"
-  alt="Logo rádia">
+      <input
+        id="suggestStream"
+        type="url"
+        placeholder="Stream URL"
+        required>
 
-<h2
-  id="radioName"
-  class="radio-name">
-  Rádio Expres
-</h2>
+      <input
+        id="suggestWeb"
+        type="url"
+        placeholder="Web rádia – voliteľné">
 
-<a
-  id="radioWeb"
-  class="radio-web"
-  href="https://www.bauermedia.sk"
-  target="_blank"
-  rel="noopener">
-  www.bauermedia.sk
-</a>
+      <textarea
+        id="suggestNote"
+        placeholder="Poznámka – voliteľné"></textarea>
 
-<div class="now-playing">
+      <button
+        class="form-button"
+        type="submit">
+        💡 Odoslať návrh
+      </button>
 
-  <div class="now-label">
-    Práve hrá
-  </div>
+    </form>
 
-  <div
-    id="songTitle"
-    class="song-title">
-    Načítavam...
-  </div>
+    <div
+      id="suggestMessage"
+      class="status">
+    </div>
 
-  <div
-    id="artist"
-    class="artist">
-  </div>
+  </section>
 
-</div>
+</aside>
 
-<div class="controls">
+<main>
 
-  <button
-    id="playButton"
-    class="control-button"
-    type="button"
-    onclick="togglePlay()"
-    aria-label="Prehrať alebo pozastaviť">
-    ▶
-  </button>
+  <section class="player">
 
-  <button
-    id="favoriteButton"
-    class="control-button favorite-button"
-    type="button"
-    onclick="toggleFavorite()"
-    aria-label="Obľúbené">
-    ♡
-  </button>
+    <img
+      id="radioLogo"
+      class="radio-logo"
+      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRObKScNrVH6CHuGgHAglR-ZjGL0Crgp6whWV5GNDMzqQ&s=10"
+      alt="Logo rádia">
 
-  <button
-    id="castButton"
-    class="control-button cast-button"
-    type="button"
-    onclick="googleCastPreparing()"
-    aria-label="Google Cast">
-    📺
-  </button>
+    <h2
+      id="radioName"
+      class="radio-name">
+      Rádio Expres
+    </h2>
 
-</div>
+    <a
+      id="radioWeb"
+      class="radio-web"
+      href="https://www.bauermedia.sk"
+      target="_blank"
+      rel="noopener">
+      www.bauermedia.sk
+    </a>
 
-<div
-  id="castMessage"
-  class="cast-message">
-</div>
+    <div class="now-playing">
 
-<div class="volume-box">
+      <div class="now-label">
+        Práve hrá
+      </div>
 
-  <span>🔊</span>
+      <div
+        id="songTitle"
+        class="song-title">
+        Načítavam...
+      </div>
 
-  <input
-    id="volumeControl"
-    type="range"
-    min="0"
-    max="1"
-    step="0.01"
-    value="1"
-    oninput="changeVolume(this.value)">
+      <div
+        id="artist"
+        class="artist">
+      </div>
 
-</div>
+    </div>
 
-<div
-  id="playerStatus"
-  class="status">
-  Pripravené
-</div>
+    <div class="controls">
 
-<audio
-  id="audioPlayer"
-  preload="none">
-</audio>
+      <button
+        id="playButton"
+        class="control-button"
+        type="button"
+        onclick="togglePlay()"
+        aria-label="Prehrať alebo pozastaviť">
+        ▶
+      </button>
 
-  </section></main><section
+      <button
+        id="favoriteButton"
+        class="control-button favorite-button"
+        type="button"
+        onclick="toggleFavorite()"
+        aria-label="Obľúbené">
+        ♡
+      </button>
+
+      <button
+        id="castButton"
+        class="control-button cast-button"
+        type="button"
+        onclick="googleCastPreparing()"
+        aria-label="Google Cast">
+        📺
+      </button>
+
+    </div>
+
+    <div
+      id="castMessage"
+      class="cast-message">
+    </div>
+
+    <div class="volume-box">
+
+      <span>🔊</span>
+
+      <input
+        id="volumeControl"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value="1"
+        oninput="changeVolume(this.value)">
+
+    </div>
+
+    <div
+      id="playerStatus"
+      class="status">
+      Pripravené
+    </div>
+
+    <audio
+      id="audioPlayer"
+      preload="none">
+    </audio>
+
+  </section>
+
+</main>
+
+<section
   id="programSection"
   class="program-section"
-  style="max-width:900px;margin:0 auto 30px;padding:0 15px;">  <div
-    style="background:white;border-radius:20px;padding:25px;box-shadow:0 8px 30px rgba(0,0,0,.08);"><h2 style="margin-top:0;">
-  📅 Program
-</h2>
+  style="max-width:900px;margin:0 auto 30px;padding:0 15px;">
 
-<label for="programDate">
-  Vyber dátum:
-</label>
+  <div
+    style="background:white;border-radius:20px;padding:25px;box-shadow:0 8px 30px rgba(0,0,0,.08);">
 
-<input
-  id="programDate"
-  type="date"
-  style="margin-top:8px;max-width:220px;"
-  onchange="showProgram()">
+    <h2 style="margin-top:0;">
+      📅 Program
+    </h2>
 
-<div
-  id="programContent"
-  class="program-box">
-  Vyber dátum programu.
-</div>
+    <label for="programDate">
+      Vyber dátum:
+    </label>
 
-  </div></section><footer>
+    <input
+      id="programDate"
+      type="date"
+      style="margin-top:8px;max-width:220px;"
+      onchange="showProgram()">
+
+    <div
+      id="programContent"
+      class="program-box">
+      Vyber dátum programu.
+    </div>
+
+  </div>
+
+</section>
+
+<footer>
   Počúvam Rádiá
-</footer><script>
+</footer>
+
+<script>
+
   const radios = [
     {
       id: "expres",
@@ -620,6 +679,7 @@ onclick="closeSideMenu()">
   ];
 
   const programs = {
+
     "expres": {
       "2026-09-06": [
         {
@@ -692,8 +752,17 @@ onclick="closeSideMenu()">
 
   let metadataTimer = null;
 
-  const METADATA_SERVER =
-    "https://jaroacjak.github.io/pocuvamradio/metadata.php";
+  /*
+   * Metadata API.
+   *
+   * Rádio Expres používa priamo RadioAPI.
+   * Melody a vlastné rádiá zatiaľ nemajú
+   * samostatný metadata API endpoint.
+   */
+  const METADATA_API = {
+    expres:
+      "https://public.radioapi.me/station/1d42d19e-244a-4419-a432-b71776529795/nowplaying"
+  };
 
   const audioPlayer =
     document.getElementById(
@@ -716,6 +785,7 @@ onclick="closeSideMenu()">
   }
 
   function toggleSideMenu() {
+
     document
       .getElementById("sideMenu")
       .classList.add("open");
@@ -726,6 +796,7 @@ onclick="closeSideMenu()">
   }
 
   function closeSideMenu() {
+
     document
       .getElementById("sideMenu")
       .classList.remove("open");
@@ -743,6 +814,7 @@ onclick="closeSideMenu()">
    * skutočným Google Cast ovládaním.
    */
   function googleCastPreparing() {
+
     const message =
       document.getElementById(
         "castMessage"
@@ -757,28 +829,31 @@ onclick="closeSideMenu()">
   }
 
   function loadRadio(radio) {
+
     if (!radio) return;
 
     currentRadio = radio;
 
     /*
      * Odovzdanie aktuálneho rádia do Castu.
-     *
-     * Ak Cast nie je pripojený, iba sa uloží
-     * aktuálne rádio a pri pripojení sa použije.
      */
     if (
       window.PocuvamRadiaCast &&
       typeof window.PocuvamRadiaCast.setRadio ===
         "function"
     ) {
+
       window.PocuvamRadiaCast.setRadio(
         radio
       );
     }
 
     if (metadataTimer) {
-      clearInterval(metadataTimer);
+
+      clearInterval(
+        metadataTimer
+      );
+
       metadataTimer = null;
     }
 
@@ -800,12 +875,18 @@ onclick="closeSideMenu()">
       );
 
     if (radio.logo) {
+
       logo.src = radio.logo;
+
       logo.style.display =
         "inline-block";
+
     } else {
+
       logo.removeAttribute("src");
-      logo.style.display = "none";
+
+      logo.style.display =
+        "none";
     }
 
     const web =
@@ -814,6 +895,7 @@ onclick="closeSideMenu()">
       );
 
     if (radio.web) {
+
       web.href = radio.web;
 
       web.textContent =
@@ -824,8 +906,11 @@ onclick="closeSideMenu()">
 
       web.style.display =
         "inline-block";
+
     } else {
-      web.style.display = "none";
+
+      web.style.display =
+        "none";
     }
 
     document
@@ -847,11 +932,14 @@ onclick="closeSideMenu()">
       .textContent = "";
 
     updateFavoriteButton();
+
     renderAllMenu();
+
     startMetadata();
   }
 
   function togglePlay() {
+
     if (audioPlayer.paused) {
 
       audioPlayer
@@ -951,11 +1039,13 @@ onclick="closeSideMenu()">
   );
 
   function changeVolume(value) {
+
     audioPlayer.volume =
       Number(value);
   }
 
   function isFavorite(id) {
+
     return favorites.some(
       radio =>
         radio.id === id
@@ -993,6 +1083,7 @@ onclick="closeSideMenu()">
     );
 
     updateFavoriteButton();
+
     renderFavorites();
   }
 
@@ -1043,6 +1134,7 @@ onclick="closeSideMenu()">
     );
 
     renderFavorites();
+
     updateFavoriteButton();
   }
 
@@ -1127,6 +1219,7 @@ onclick="closeSideMenu()">
           );
 
         button.type = "button";
+
         button.className =
           "recommended-item";
 
@@ -1177,6 +1270,88 @@ onclick="closeSideMenu()">
 
         wrapper.innerHTML = `
           <div
+            onclick="selectFavoriteRadio('${escapeJs(radio.id)}')"
+            style="cursor:pointer;">
+
+            <span class="item-title">
+              📻 ${escapeHtml(radio.name)}
+            </span>
+
+            <span class="item-small">
+              ${radio.custom ? "Vlastné rádio" : "Rádio"}
+            </span>
+
+          </div>
+
+          <button
+            class="danger-button"
+            type="button"
+            onclick="removeFavorite('${escapeJs(radio.id)}')">
+            Odstrániť
+          </button>
+        `;
+
+        container.appendChild(
+          wrapper
+        );
+      }
+    );
+  }
+
+  function selectFavoriteRadio(id) {
+
+    let radio =
+      radios.find(
+        item =>
+          item.id === id
+      );
+
+    if (!radio) {
+
+      radio =
+        myRadios.find(
+          item =>
+            item.id === id
+        );
+    }
+
+    if (radio) {
+      selectRadio(radio);
+    }
+  }
+
+  function renderMyRadios() {
+
+    const container =
+      document.getElementById(
+        "myRadiosList"
+      );
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    if (!myRadios.length) {
+
+      container.innerHTML =
+        '<div class="empty">Zatiaľ nemáš pridané vlastné rádio.</div>';
+
+      return;
+    }
+
+    myRadios.forEach(
+      radio => {
+
+        const wrapper =
+          document.createElement(
+            "div"
+          );
+
+        wrapper.className =
+          "my-radio-item";
+
+        wrapper.innerHTML = `
+          <div
             onclick="selectMyRadio('${escapeJs(radio.id)}')"
             style="cursor:pointer;">
 
@@ -1185,7 +1360,7 @@ onclick="closeSideMenu()">
             </span>
 
             <span class="item-small">
-              Vlastné rádio
+              Kliknutím počúvať
             </span>
 
           </div>
@@ -1219,14 +1394,20 @@ onclick="closeSideMenu()">
   }
 
   function renderAllMenu() {
+
     renderRadioList();
+
     renderRecommended();
+
     renderFavorites();
+
     renderMyRadios();
   }
 
   function selectRadio(radio) {
+
     loadRadio(radio);
+
     closeSideMenu();
   }
 
@@ -1273,10 +1454,15 @@ onclick="closeSideMenu()">
           .slice(2),
 
       name,
+
       stream,
+
       web,
+
       logo: "",
+
       recommended: false,
+
       custom: true
     };
 
@@ -1334,6 +1520,7 @@ onclick="closeSideMenu()">
     if (
       currentRadio.id === id
     ) {
+
       loadRadio(
         radios[0]
       );
@@ -1521,21 +1708,54 @@ onclick="closeSideMenu()">
         .join("");
   }
 
+  /*
+   * Metadata pre Rádio Expres:
+   * RadioAPI
+   *
+   * Používame iba:
+   * - názov skladby
+   * - interpreta
+   *
+   * Album a artwork sa nepoužívajú.
+   */
   async function loadMetadata() {
 
     if (!currentRadio) {
       return;
     }
 
+    const apiUrl =
+      METADATA_API[
+        currentRadio.id
+      ];
+
+    /*
+     * Pre Melody a vlastné rádiá zatiaľ
+     * metadata API nemáme.
+     */
+    if (!apiUrl) {
+
+      document
+        .getElementById(
+          "songTitle"
+        )
+        .textContent =
+        "Práve hrá";
+
+      document
+        .getElementById(
+          "artist"
+        )
+        .textContent = "";
+
+      return;
+    }
+
     try {
 
       const url =
-        METADATA_SERVER +
-        "?radio=" +
-        encodeURIComponent(
-          currentRadio.id
-        ) +
-        "&t=" +
+        apiUrl +
+        "?t=" +
         Date.now();
 
       const response =
@@ -1549,28 +1769,30 @@ onclick="closeSideMenu()">
 
       if (!response.ok) {
         throw new Error(
-          "Metadata server error"
+          "Metadata API error"
         );
       }
 
       const data =
         await response.json();
 
+      /*
+       * RadioAPI poskytuje názov skladby
+       * v poli song a interpreta v poli artist.
+       */
       const title =
-        data.title || "";
+        data.song || "";
 
       const artist =
         data.artist || "";
 
-      if (title) {
-
-        document
-          .getElementById(
-            "songTitle"
-          )
-          .textContent =
-          title;
-      }
+      document
+        .getElementById(
+          "songTitle"
+        )
+        .textContent =
+        title ||
+        "Práve hrá";
 
       document
         .getElementById(
@@ -1580,8 +1802,8 @@ onclick="closeSideMenu()">
         artist;
 
       /*
-       * Ak je Cast aktívny, aktualizujeme
-       * aj názov skladby na Cast zariadení.
+       * Aktualizácia Google Cast metadata,
+       * ak je Cast práve aktívny.
        */
       if (
         window.PocuvamRadiaCast &&
@@ -1593,20 +1815,25 @@ onclick="closeSideMenu()">
           title,
           artist
         );
-
       }
 
     } catch (error) {
 
-      /*
-        GitHub Pages PHP nespúšťa.
-        METADATA_SERVER musí byť neskôr
-        umiestnený na PHP hostingu.
-      */
+      console.error(
+        "Nepodarilo sa načítať metadata:",
+        error
+      );
     }
   }
 
   function startMetadata() {
+
+    if (metadataTimer) {
+
+      clearInterval(
+        metadataTimer
+      );
+    }
 
     loadMetadata();
 
@@ -1638,6 +1865,7 @@ onclick="closeSideMenu()">
   }
 
   initializeApp();
+
 </script>
 
 <!-- Google Cast ovládanie aplikácie -->
