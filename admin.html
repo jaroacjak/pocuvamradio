@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin – Počúvam Rádiá</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: white;
+        min-height: 100vh;
+    }
+
+    .container {
+        width: min(1000px, 94%);
+        margin: 30px auto;
+    }
+
+    h1 {
+        margin-bottom: 5px;
+    }
+
+    .subtitle {
+        color: #94a3b8;
+        margin-top: 0;
+    }
+
+    .card {
+        background: #1e293b;
+        border-radius: 18px;
+        padding: 22px;
+        margin-top: 20px;
+        box-shadow: 0 8px 30px rgba(0,0,0,.25);
+    }
+
+    label {
+        display: block;
+        margin-bottom: 7px;
+        font-weight: bold;
+    }
+
+    input,
+    select,
+    button {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid #475569;
+        font-size: 16px;
+    }
+
+    input,
+    select {
+        background: #0f172a;
+        color: white;
+    }
+
+    button {
+        border: none;
+        cursor: pointer;
+        background: #2563eb;
+        color: white;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        opacity: .9;
+    }
+
+    .danger {
+        background: #dc2626;
+    }
+
+    .secondary {
+        background: #475569;
+    }
+
+    .success {
+        background: #16a34a;
+    }
+
+    .login {
+        max-width: 450px;
+        margin: 80px auto;
+    }
+
+    .field {
+        margin-bottom: 15px;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .topbar button {
+        width: auto;
+        margin: 0;
+    }
+
+    .row {
+        display: grid;
+        grid-template-columns: 140px 1fr 100px;
+        gap: 10px;
+        align-items: end;
+        margin-bottom: 12px;
+    }
+
+    .program-row {
+        display: grid;
+        grid-template-columns: 100px 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 12px;
+        margin-top: 10px;
+        border-radius: 12px;
+        background: #0f172a;
+    }
+
+    .program-time {
+        font-weight: bold;
+        color: #60a5fa;
+    }
+
+    .program-name {
+        overflow-wrap: anywhere;
+    }
+
+    .delete-row {
+        width: auto;
+        margin: 0;
+        padding: 8px 12px;
+    }
+
+    .status {
+        margin-top: 15px;
+        padding: 12px;
+        border-radius: 10px;
+        background: #334155;
+        color: #cbd5e1;
+    }
+
+    .status.success-status {
+        background: #14532d;
+        color: #bbf7d0;
+    }
+
+    .status.error-status {
+        background: #7f1d1d;
+        color: #fecaca;
+    }
+
+    .radio-id-info {
+        color: #94a3b8;
+        font-size: 13px;
+        margin-top: 6px;
+    }
+
+    @media (max-width: 650px) {
+        .row {
+            grid-template-columns: 1fr;
+        }
+
+        .program-row {
+            grid-template-columns: 75px 1fr auto;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="container login">
+    <div class="card">
+        <h1>🔐 Admin</h1>
+        <p class="subtitle">Počúvam Rádiá – správa programu</p>
+
+        <div class="field">
+            <label for="email">E-mail</label>
+            <input id="email" type="email" placeholder="admin@email.sk">
+        </div>
+
+        <div class="field">
+            <label for="password">Heslo</label>
+            <input id="password" type="password" placeholder="Heslo">
+        </div>
+
+        <button id="loginBtn">Prihlásiť sa</button>
+
+        <div id="loginStatus" class="status hidden"></div>
+    </div>
+</div>
+
+
+<!-- ADMIN -->
+<div id="adminScreen" class="container hidden">
+
+    <div class="card">
+        <div class="topbar">
+            <div>
+                <h1>📻 Správa programu</h1>
+                <p class="subtitle">Ručné pridávanie programu pre jednotlivé rádiá</p>
+            </div>
+
+            <button id="logoutBtn" class="secondary">
+                Odhlásiť sa
+            </button>
+        </div>
+    </div>
+
+
+    <!-- VÝBER RÁDIA -->
+    <div class="card">
+
+        <h2>1. Vyber rádio</h2>
+
+        <div class="field">
+            <label for="radioId">Rádio</label>
+
+            <select id="radioId">
+                <option value="expres">Rádio Expres</option>
+                <option value="melody">Rádio Melody</option>
+                <option value="funradio">Fun Rádio</option>
+                <option value="europa2">Europa 2</option>
+                <option value="radio1">Rádio 1</option>
+                <option value="custom">Vlastné rádio</option>
+            </select>
+        </div>
+
+        <div id="customRadioBox" class="hidden">
+
+            <div class="field">
+                <label for="customRadioId">ID rádia</label>
+                <input
+                    id="customRadioId"
+                    type="text"
+                    placeholder="napr. moje-radio"
+                >
+
+                <div class="radio-id-info">
+                    ID používaj bez medzier. Toto ID sa uloží do Firebase.
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DÁTUM -->
+    <div class="card">
+
+        <h2>2. Vyber dátum</h2>
+
+        <div class="field">
+            <label for="programDate">Dátum programu</label>
+
+            <input id="programDate" type="date">
+        </div>
+
+        <button id="loadBtn" class="secondary">
+            Načítať program
+        </button>
+
+    </div>
+
+
+    <!-- PRIDÁVANIE -->
+    <div class="card">
+
+        <h2>3. Pridaj relácie</h2>
+
+        <div id="entries"></div>
+
+        <button id="addEntryBtn">
+            + Pridať reláciu
+        </button>
+
+    </div>
+
+
+    <!-- ULOŽENIE -->
+    <div class="card">
+
+        <h2>4. Uložiť program</h2>
+
+        <p class="subtitle">
+            Program sa uloží do Firebase pre vybrané rádio a dátum.
+        </p>
+
+        <button id="saveBtn" class="success">
+            💾 Uložiť program do Firebase
+        </button>
+
+        <button id="deleteDayBtn" class="danger">
+            🗑️ Vymazať program pre tento deň
+        </button>
+
+        <div id="status" class="status hidden"></div>
+
+    </div>
+
+
+    <!-- PREVIEW -->
+    <div class="card">
+
+        <h2>📋 Aktuálny program</h2>
+
+        <div id="preview">
+            <p class="subtitle">
+                Zatiaľ nebol načítaný žiadny program.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+// ======================================================
+// FIREBASE
+// ======================================================
+
+const firebaseConfig = {
+    apiKey: "AIzaSyD9L1TbbJ8cNm_DdMAUQKLdwMsyrqZoeg",
+    authDomain: "pocuvamradio-6a83d.firebaseapp.com",
+    databaseURL: "https://pocuvamradio-6a83d-default-rtdb.firebaseio.com",
+    projectId: "pocuvamradio-6a83d",
+    storageBucket: "pocuvamradio-6a83d.firebasestorage.app",
+    messagingSenderId: "478955104183",
+    appId: "1:478955104183:web:a61712cc8b001989ae2a32",
+    measurementId: "G-FD47QJ38EQ"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const database = firebase.database();
+
+
+// ======================================================
+// ELEMENTY
+// ======================================================
+
+const loginScreen = document.getElementById("loginScreen");
+const adminScreen = document.getElementById("adminScreen");
+
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const loginStatus = document.getElementById("loginStatus");
+const statusBox = document.getElementById("status");
+
+const radioSelect = document.getElementById("radioId");
+const customRadioBox = document.getElementById("customRadioBox");
+const customRadioId = document.getElementById("customRadioId");
+
+const programDate = document.getElementById("programDate");
+
+const entries = document.getElementById("entries");
+const preview = document.getElementById("preview");
+
+const addEntryBtn = document.getElementById("addEntryBtn");
+const saveBtn = document.getElementById("saveBtn");
+const loadBtn = document.getElementById("loadBtn");
+const deleteDayBtn = document.getElementById("deleteDayBtn");
+
+
+// ======================================================
+// DNEŠNÝ DÁTUM
+// ======================================================
+
+function getLocalDate() {
+
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+programDate.value = getLocalDate();
+
+
+// ======================================================
+// POMOCNÉ FUNKCIE
+// ======================================================
+
+function showStatus(message, type = "") {
+
+    statusBox.textContent = message;
+
+    statusBox.className = "status";
+
+    if (type === "success") {
+        statusBox.classList.add("success-status");
+    }
+
+    if (type === "error") {
+        statusBox.classList.add("error-status");
+    }
+
+    statusBox.classList.remove("hidden");
+}
+
+
+function showLoginStatus(message, type = "") {
+
+    loginStatus.textContent = message;
+
+    loginStatus.className = "status";
+
+    if (type === "error") {
+        loginStatus.classList.add("error-status");
+    }
+
+    if (type === "success") {
+        loginStatus.classList.add("success-status");
+    }
+
+    loginStatus.classList.remove("hidden");
+}
+
+
+function getRadioId() {
+
+    if (radioSelect.value === "custom") {
+
+        const id = customRadioId.value.trim();
+
+        if (!id) {
+            throw new Error("Zadaj ID vlastného rádia.");
+        }
+
+        return id;
+    }
+
+    return radioSelect.value;
+}
+
+
+function getRadioName() {
+
+    if (radioSelect.value === "custom") {
+        return customRadioId.value.trim();
+    }
+
+    const option =
+        radioSelect.options[radioSelect.selectedIndex];
+
+    return option.textContent;
+}
+
+
+// ======================================================
+// PRIHLÁSENIE
+// ======================================================
+
+loginBtn.addEventListener("click", async () => {
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+
+        showLoginStatus(
+            "Vyplň e-mail a heslo.",
+            "error"
+        );
+
+        return;
+    }
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = "Prihlasujem...";
+
+    try {
+
+        await auth.signInWithEmailAndPassword(
+            email,
+            password
+        );
+
+        showLoginStatus(
+            "Prihlásenie úspešné.",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        showLoginStatus(
+            "Prihlásenie sa nepodarilo: " + error.message,
+            "error"
+        );
+
+    } finally {
+
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Prihlásiť sa";
+    }
+
+});
+
+
+// ======================================================
+// ODHLÁSENIE
+// ======================================================
+
+logoutBtn.addEventListener("click", async () => {
+
+    await auth.signOut();
+
+});
+
+
+// ======================================================
+// STAV PRIHLÁSENIA
+// ======================================================
+
+auth.onAuthStateChanged(user => {
+
+    if (user) {
+
+        loginScreen.classList.add("hidden");
+        adminScreen.classList.remove("hidden");
+
+        console.log(
+            "Prihlásený admin:",
+            user.uid
+        );
+
+    } else {
+
+        loginScreen.classList.remove("hidden");
+        adminScreen.classList.add("hidden");
+
+    }
+
+});
+
+
+// ======================================================
+// VLASTNÉ RÁDIO
+// ======================================================
+
+radioSelect.addEventListener("change", () => {
+
+    if (radioSelect.value === "custom") {
+
+        customRadioBox.classList.remove("hidden");
+
+    } else {
+
+        customRadioBox.classList.add("hidden");
+
+    }
+
+});
+
+
+// ======================================================
+// PRIDAŤ RIADOK
+// ======================================================
+
+function addEntry(time = "", name = "") {
+
+    const row = document.createElement("div");
+
+    row.className = "row";
+
+    row.innerHTML = `
+        <div>
+            <label>Čas</label>
+            <input
+                type="time"
+                class="entry-time"
+                value="${escapeAttribute(time)}"
+            >
+        </div>
+
+        <div>
+            <label>Názov relácie</label>
+            <input
+                type="text"
+                class="entry-name"
+                placeholder="Názov relácie"
+                value="${escapeAttribute(name)}"
+            >
+        </div>
+
+        <button
+            type="button"
+            class="danger remove-entry"
+        >
+            Vymazať
+        </button>
+    `;
+
+    row.querySelector(".remove-entry")
+        .addEventListener("click", () => {
+
+            row.remove();
+
+            updatePreview();
+
+        });
+
+    row.querySelectorAll("input")
+        .forEach(input => {
+
+            input.addEventListener(
+                "input",
+                updatePreview
+            );
+
+        });
+
+    entries.appendChild(row);
+
+    updatePreview();
+}
+
+
+function escapeAttribute(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+}
+
+
+addEntryBtn.addEventListener(
+    "click",
+    () => addEntry()
+);
+
+
+// ======================================================
+// ZÍSKAŤ PROGRAM Z FORMULÁRA
+// ======================================================
+
+function getEntries() {
+
+    const rows =
+        document.querySelectorAll(".row");
+
+    const result = [];
+
+    rows.forEach(row => {
+
+        const time =
+            row.querySelector(".entry-time")
+                .value;
+
+        const name =
+            row.querySelector(".entry-name")
+                .value.trim();
+
+        if (time && name) {
+
+            result.push({
+                time: time,
+                name: name
+            });
+
+        }
+
+    });
+
+    result.sort((a, b) =>
+        a.time.localeCompare(b.time)
+    );
+
+    return result;
+}
+
+
+// ======================================================
+// PREVIEW
+// ======================================================
+
+function updatePreview() {
+
+    const data = getEntries();
+
+    if (data.length === 0) {
+
+        preview.innerHTML = `
+            <p class="subtitle">
+                Žiadne relácie.
+            </p>
+        `;
+
+        return;
+    }
+
+    preview.innerHTML = "";
+
+    data.forEach(item => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "program-row";
+
+        const time =
+            document.createElement("div");
+
+        time.className = "program-time";
+        time.textContent = item.time;
+
+        const name =
+            document.createElement("div");
+
+        name.className = "program-name";
+        name.textContent = item.name;
+
+        const spacer =
+            document.createElement("div");
+
+        div.appendChild(time);
+        div.appendChild(name);
+        div.appendChild(spacer);
+
+        preview.appendChild(div);
+
+    });
+}
+
+
+// ======================================================
+// NAČÍTAŤ PROGRAM
+// ======================================================
+
+loadBtn.addEventListener("click", loadProgram);
+
+
+async function loadProgram() {
+
+    try {
+
+        const radioId = getRadioId();
+        const date = programDate.value;
+
+        if (!date) {
+            throw new Error("Vyber dátum.");
+        }
+
+        loadBtn.disabled = true;
+        loadBtn.textContent = "Načítavam...";
+
+        const snapshot =
+            await database
+                .ref(
+                    `programs/${radioId}/${date}`
+                )
+                .once("value");
+
+        const data = snapshot.val();
+
+        entries.innerHTML = "";
+
+        if (Array.isArray(data)) {
+
+            data.forEach(item => {
+
+                addEntry(
+                    item.time || "",
+                    item.name || ""
+                );
+
+            });
+
+            showStatus(
+                `Načítaných ${data.length} relácií.`,
+                "success"
+            );
+
+        } else {
+
+            updatePreview();
+
+            showStatus(
+                "Pre tento dátum zatiaľ nie je uložený program."
+            );
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        showStatus(
+            error.message ||
+            "Program sa nepodarilo načítať.",
+            "error"
+        );
+
+    } finally {
+
+        loadBtn.disabled = false;
+        loadBtn.textContent = "Načítať program";
+
+    }
+
+}
+
+
+// ======================================================
+// ULOŽIŤ PROGRAM
+// ======================================================
+
+saveBtn.addEventListener("click", saveProgram);
+
+
+async function saveProgram() {
+
+    try {
+
+        const radioId = getRadioId();
+        const date = programDate.value;
+
+        if (!date) {
+            throw new Error("Vyber dátum.");
+        }
+
+        const data = getEntries();
+
+        if (data.length === 0) {
+
+            const confirmEmpty =
+                confirm(
+                    "Program je prázdny. Chceš pre tento deň uložiť prázdny program?"
+                );
+
+            if (!confirmEmpty) {
+                return;
+            }
+        }
+
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Ukladám...";
+
+        await database
+            .ref(`programs/${radioId}/${date}`)
+            .set(data);
+
+        showStatus(
+            `Program pre ${getRadioName()} bol uložený.`,
+            "success"
+        );
+
+        updatePreview();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showStatus(
+            error.message ||
+            "Program sa nepodarilo uložiť.",
+            "error"
+        );
+
+    } finally {
+
+        saveBtn.disabled = false;
+        saveBtn.textContent =
+            "💾 Uložiť program do Firebase";
+
+    }
+
+}
+
+
+// ======================================================
+// VYMAZAŤ PROGRAM PRE DEŇ
+// ======================================================
+
+deleteDayBtn.addEventListener(
+    "click",
+    deleteDay
+);
+
+
+async function deleteDay() {
+
+    try {
+
+        const radioId = getRadioId();
+        const date = programDate.value;
+
+        if (!date) {
+            throw new Error("Vyber dátum.");
+        }
+
+        const confirmed =
+            confirm(
+                `Naozaj chceš vymazať celý program pre ${getRadioName()} dňa ${date}?`
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+        deleteDayBtn.disabled = true;
+        deleteDayBtn.textContent = "Mažem...";
+
+        await database
+            .ref(`programs/${radioId}/${date}`)
+            .remove();
+
+        entries.innerHTML = "";
+
+        updatePreview();
+
+        showStatus(
+            "Program bol vymazaný.",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        showStatus(
+            error.message ||
+            "Program sa nepodarilo vymazať.",
+            "error"
+        );
+
+    } finally {
+
+        deleteDayBtn.disabled = false;
+        deleteDayBtn.textContent =
+            "🗑️ Vymazať program pre tento deň";
+
+    }
+
+}
+
+
+// ======================================================
+// PRI ZMENE DÁTUMU
+// ======================================================
+
+programDate.addEventListener(
+    "change",
+    () => {
+
+        entries.innerHTML = "";
+        updatePreview();
+
+    }
+);
+
+
+// ======================================================
+// ZAČIATOČNÝ RIADOK
+// ======================================================
+
+addEntry();
+
+</script>
+
+</body>
+</html>
